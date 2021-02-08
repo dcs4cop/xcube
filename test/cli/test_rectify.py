@@ -22,6 +22,7 @@ class RectifyTest(CliDataTest):
                                   '--size', '508,253',
                                   '--point', '-179.5,-89.5',
                                   '--res', '0.7071067811865475',
+                                  '--crs', 'EPSG:4326',
                                   TEST_ZARR_DIR])
         self.assertEqual(0, result.exit_code)
         self.assertEqual('Opening dataset from \'test.zarr\'...\n'
@@ -50,6 +51,7 @@ class RectifyTest(CliDataTest):
                                   '--size', '508,253',
                                   '--point', '-179.5,-89.5',
                                   '--res', '0.7071067811865475',
+                                  '--crs', 'EPSG:4326',
                                   '--var', 'precipitation,temperature',
                                   '--var', 'soil_moisture',
                                   TEST_ZARR_DIR])

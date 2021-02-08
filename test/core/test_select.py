@@ -53,7 +53,7 @@ class SelectSpatialSubsetTest(unittest.TestCase):
     def test_select_spatial_subset_some_xy_bbox(self):
         ds1 = create_highroc_dataset()
         ds2 = select_spatial_subset(ds1, xy_bbox=(8., 55, 10., 56.))
-        self.assertEqual((2, 2), ds2.conc_chl.shape)
+        self.assertEqual((3, 3), ds2.conc_chl.shape)
 
     def test_select_spatial_subset_none_xy_bbox(self):
         ds1 = create_highroc_dataset()
@@ -71,4 +71,3 @@ class SelectSpatialSubsetTest(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             select_spatial_subset(ds1)
         self.assertEqual("One of ij_bbox and xy_bbox must be given", f'{cm.exception}')
-

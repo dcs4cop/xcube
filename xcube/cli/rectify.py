@@ -34,6 +34,7 @@ DEFAULT_OUTPUT_PATH = 'out.zarr'
 DEFAULT_XY_NAMES = 'lon,lat'
 DEFAULT_DELTA = 1e-5
 DEFAULT_DRY_RUN = False
+DEFAULT_CRS = 'EPSG:4326'
 
 
 # noinspection PyShadowingBuiltins
@@ -41,7 +42,7 @@ DEFAULT_DRY_RUN = False
 @click.argument('dataset', metavar='INPUT')
 @click.option('--xy-vars', 'xy_var_names',
               help=f'Comma-separated names of variables providing x any y coordinates. '
-                   f'If omitted, names will be guessed from available variables in INPUT, e.g. "lon,lat".')
+                   f'If omitted, names will be guessed from available coordinate variables in INPUT, e.g. "lon,lat".')
 @click.option('--var', '-v', 'var_names', multiple=True, metavar='VARIABLES',
               help="Comma-separated list of names of variables to be included or multiple options may be given. "
                    "If omitted, all variables in INPUT will be reprojected.")
@@ -62,9 +63,12 @@ DEFAULT_DRY_RUN = False
               help='Output spatial coordinates of the point referring to pixel col=0.5,row=0.5 '
                    'using format "LON,LAT" or "X,Y", e.g. "1.2,53.5". '
                    'If omitted, the default reference point will the INPUT\'s minimum spatial coordinates.')
-@click.option('--res', '-r', 'output_res', type=float,
+@click.option('--res', '-r', 'output_res', metavar='RES', type=float,
               help='Output spatial resolution in decimal degrees. '
                    'If omitted, the default resolution will be close to the spatial resolution of INPUT.')
+@click.option('--crs', '-r', 'output_crs', metavar='CRS',
+              help='Output spatial coordinate reference system (CRS). '
+                   f'If omitted, the default CRS will be "{DEFAULT_CRS}".')
 @click.option('--delta', '-d', type=float, default=DEFAULT_DELTA,
               help='Relative maximum delta for detection whether a '
                    'target pixel center is within a source pixel\'s boundary.')
@@ -79,6 +83,7 @@ def rectify(dataset: str,
             output_tile_size: str = None,
             output_point: str = None,
             output_res: float = None,
+            output_crs: str = None,
             delta: float = DEFAULT_DELTA,
             dry_run: bool = DEFAULT_DRY_RUN):
     """
@@ -116,6 +121,7 @@ def rectify(dataset: str,
              output_tile_size,
              output_point,
              output_res,
+             output_crs,
              delta,
              dry_run=dry_run,
              monitor=print)
@@ -132,25 +138,35 @@ def _rectify(input_path: str,
              output_tile_size: Optional[Tuple[int, int]],
              output_point: Optional[Tuple[float, float]],
              output_res: Optional[float],
+             output_crs: Optional[str],
              delta: float,
              dry_run: bool,
              monitor):
+    import pyproj.crs
+
     from xcube.core.dsio import guess_dataset_format
     from xcube.core.dsio import open_dataset
     from xcube.core.dsio import write_dataset
-    from xcube.core.rectify import rectify_dataset
-    from xcube.core.rectify import ImageGeom
+    from xcube.core.gridmapping import GridMapping
+    from xcube.core.resampling import rectify_dataset
     from xcube.core.sentinel3 import is_sentinel3_product
     from xcube.core.sentinel3 import open_sentinel3_product
 
     if not output_format:
         output_format = guess_dataset_format(output_path)
 
-    output_geom = None
-    if output_size is not None and output_point is not None and output_res is not None:
-        output_geom = ImageGeom(size=output_size, x_min=output_point[0], y_min=output_point[1], xy_res=output_res)
-    elif output_size is not None or output_point is not None or output_res is not None:
-        raise click.ClickException('SIZE, POINT, and RES must all be given or none of them.')
+    output_gm = None
+    output_gm_given = (output_size is not None,
+                       output_point is not None,
+                       output_res is not None,
+                       output_crs is not None)
+    if all(output_gm_given):
+        output_gm = GridMapping.regular(size=output_size,
+                                        xy_min=output_point,
+                                        xy_res=output_res,
+                                        crs=pyproj.crs.CRS.from_user_input(output_crs))
+    elif any(output_gm_given):
+        raise click.ClickException('SIZE, POINT, RES, and CRS must all be given or none of them.')
 
     monitor(f'Opening dataset from {input_path!r}...')
 
@@ -160,19 +176,19 @@ def _rectify(input_path: str,
         src_ds = open_dataset(input_path)
 
     monitor('Rectifying...')
-    reproj_ds = rectify_dataset(src_ds,
-                                xy_names=xy_names,
-                                var_names=var_names,
-                                output_geom=output_geom,
-                                tile_size=output_tile_size,
-                                uv_delta=delta)
+    rectified_ds = rectify_dataset(src_ds,
+                                   xy_var_names=xy_names,
+                                   var_names=var_names,
+                                   target_gm=output_gm,
+                                   tile_size=output_tile_size,
+                                   uv_delta=delta)
 
-    if reproj_ds is None:
+    if rectified_ds is None:
         monitor(f'Dataset {input_path} does not seem to have an intersection with bounding box')
         return
 
     monitor(f'Writing rectified dataset to {output_path!r}...')
     if not dry_run:
-        write_dataset(reproj_ds, output_path, output_format)
+        write_dataset(rectified_ds, output_path, output_format)
 
     monitor(f'Done.')

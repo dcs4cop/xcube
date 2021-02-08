@@ -30,12 +30,13 @@ import warnings
 from typing import Any, Callable, Dict, Sequence, Tuple
 
 import xarray as xr
+
 from xcube.core.dsio import DatasetIO, find_dataset_io, guess_dataset_format, rimraf
 from xcube.core.evaluate import evaluate_dataset
 from xcube.core.gen.defaults import DEFAULT_OUTPUT_PATH, DEFAULT_OUTPUT_RESAMPLING, DEFAULT_OUTPUT_SIZE
 from xcube.core.gen.iproc import InputProcessor, find_input_processor_class
-from xcube.core.geocoding import GeoCoding
-from xcube.core.imgeom import ImageGeom
+from xcube.core.gridmapping import GridMapping
+from xcube.core.gridmapping import CRS_WGS84
 from xcube.core.optimize import optimize_dataset
 from xcube.core.select import select_spatial_subset, select_variables_subset
 from xcube.core.timecoord import add_time_coords, from_time_in_days_since_1970
@@ -223,8 +224,11 @@ def _process_input(input_processor: InputProcessor,
     xy_res = max((x_max - x_min) / width, (y_max - y_min) / height)
     tile_size = _get_tile_size(output_writer_params)
 
-    output_geom = ImageGeom(size=output_size, tile_size=tile_size, x_min=x_min, y_min=y_min, xy_res=xy_res,
-                            is_geo_crs=True)
+    output_geom = GridMapping.regular(size=output_size,
+                                      xy_min=(x_min, y_min),
+                                      xy_res=xy_res,
+                                      crs=CRS_WGS84,
+                                      tile_size=tile_size)
 
     steps = []
 
@@ -239,16 +243,16 @@ def _process_input(input_processor: InputProcessor,
     # noinspection PyShadowingNames
     def step1a(input_slice):
         nonlocal geo_coding
-        geo_coding = GeoCoding.from_dataset(input_slice)
+        geo_coding = GridMapping.from_dataset(input_slice)
         subset = select_spatial_subset(input_slice,
                                        xy_bbox=output_geom.xy_bbox,
-                                       xy_border=output_geom.xy_res,
+                                       xy_border=output_geom.x_res,
                                        ij_border=1,
                                        geo_coding=geo_coding)
         if subset is None:
             monitor('no spatial overlap with input')
         elif subset is not input_slice:
-            geo_coding = GeoCoding.from_dataset(subset)
+            geo_coding = GridMapping.from_dataset(subset)
         return subset
 
     steps.append((step1a, 'spatial subsetting'))

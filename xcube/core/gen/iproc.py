@@ -28,12 +28,11 @@ import xarray as xr
 
 from xcube.constants import CRS_WKT_EPSG_4326
 from xcube.constants import EXTENSION_POINT_INPUT_PROCESSORS
-from xcube.core.geocoding import GeoCoding
-from xcube.core.imgeom import ImageGeom
-from xcube.core.rectify import rectify_dataset
-from xcube.core.reproject import reproject_xy_to_wgs84
+from xcube.core.gridmapping import GridMapping
+from xcube.core.resampling import rectify_dataset
 from xcube.core.timecoord import to_time_in_days_since_1970
-from xcube.util.plugin import ExtensionComponent, get_extension_registry
+from xcube.util.plugin import ExtensionComponent
+from xcube.util.plugin import get_extension_registry
 
 
 class ReprojectionInfo:
@@ -208,8 +207,8 @@ class InputProcessor(ExtensionComponent, metaclass=ABCMeta):
     @abstractmethod
     def process(self,
                 dataset: xr.Dataset,
-                geo_coding: GeoCoding,
-                output_geom: ImageGeom,
+                geo_coding: GridMapping,
+                output_geom: GridMapping,
                 output_resampling: str,
                 include_non_spatial_vars=False) -> xr.Dataset:
         """
@@ -299,8 +298,8 @@ class XYInputProcessor(InputProcessor, metaclass=ABCMeta):
 
     def process(self,
                 dataset: xr.Dataset,
-                geo_coding: GeoCoding,
-                output_geom: ImageGeom,
+                geo_coding: GridMapping,
+                output_geom: GridMapping,
                 output_resampling: str,
                 include_non_spatial_vars=False) -> xr.Dataset:
         """
@@ -308,48 +307,48 @@ class XYInputProcessor(InputProcessor, metaclass=ABCMeta):
         """
         reprojection_info = self.get_reprojection_info(dataset)
 
-        in_rectification_mode = reprojection_info.xy_gcp_step is None
-        if in_rectification_mode:
-            warn_prefix = 'unsupported argument in np-GCP rectification mode'
-            if reprojection_info.xy_tp_gcp_step is not None:
-                warnings.warn(f'{warn_prefix}: ignoring '
-                              f'reprojection_info.xy_tp_gcp_step = {reprojection_info.xy_tp_gcp_step!r}')
-            if output_resampling != 'Nearest':
-                warnings.warn(f'{warn_prefix}: ignoring '
-                              f'dst_resampling = {output_resampling!r}')
-            if include_non_spatial_vars:
-                warnings.warn(f'{warn_prefix}: ignoring '
-                              f'include_non_spatial_vars = {include_non_spatial_vars!r}')
+        warn_prefix = 'unsupported argument in np-GCP rectification mode'
+        if reprojection_info.xy_crs is not None:
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'reprojection_info.xy_crs = {reprojection_info.xy_crs!r}')
+        if reprojection_info.xy_tp_names is not None:
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'reprojection_info.xy_tp_names = {reprojection_info.xy_tp_names!r}')
+        if reprojection_info.xy_gcp_step is not None:
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'reprojection_info.xy_gcp_step = {reprojection_info.xy_gcp_step!r}')
+        if reprojection_info.xy_tp_gcp_step is not None:
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'reprojection_info.xy_tp_gcp_step = {reprojection_info.xy_tp_gcp_step!r}')
+        if output_resampling != 'Nearest':
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'dst_resampling = {output_resampling!r}')
+        if include_non_spatial_vars:
+            warnings.warn(f'{warn_prefix}: ignoring '
+                          f'include_non_spatial_vars = {include_non_spatial_vars!r}')
 
-            geo_coding = geo_coding.derive(x_name=reprojection_info.xy_names[0], y_name=reprojection_info.xy_names[1])
+        geo_coding = geo_coding.derive(xy_var_names=(reprojection_info.xy_names[0],
+                                                     reprojection_info.xy_names[1]))
 
-            dataset = rectify_dataset(dataset,
-                                      compute_subset=False,
-                                      geo_coding=geo_coding,
-                                      output_geom=output_geom,
-                                      is_y_reversed=True)
-            if output_geom.is_tiled:
-                # The following condition may become true, if we have used rectified_dataset(input, ..., is_y_reverse=True)
-                # In this case y-chunksizes will also be reversed. So that the first chunk is smaller than any other.
-                # Zarr will reject such datasets, when written.
-                if dataset.chunks.get('lat')[0] < dataset.chunks.get('lat')[-1]:
-                  dataset = dataset.chunk({'lat': output_geom.tile_height, 'lon': output_geom.tile_width})
-            if dataset is not None and geo_coding.is_geo_crs and geo_coding.xy_names != ('lon', 'lat'):
-                dataset = dataset.rename({geo_coding.x_name: 'lon', geo_coding.y_name: 'lat'})
+        dataset = rectify_dataset(dataset,
+                                  compute_subset=False,
+                                  source_gm=geo_coding,
+                                  target_gm=output_geom)
+        if output_geom.is_tiled:
+            # The following condition may become true,
+            # if we have used rectified_dataset(input, ..., is_y_reverse=True)
+            # In this case y-chunksizes will also be reversed. So that the first chunk is smaller than any other.
+            # Zarr will reject such datasets, when written.
+            if dataset.chunks.get('lat')[0] < dataset.chunks.get('lat')[-1]:
+                dataset = dataset.chunk({'lat': output_geom.tile_height,
+                                         'lon': output_geom.tile_width})
+        if dataset is not None \
+                and geo_coding.crs.is_geographic \
+                and geo_coding.xy_var_names != ('lon', 'lat'):
+            dataset = dataset.rename({geo_coding.xy_var_names[0]: 'lon',
+                                      geo_coding.xy_var_names[1]: 'lat'})
 
-            return dataset
-
-        else:
-            return reproject_xy_to_wgs84(dataset,
-                                         src_xy_var_names=reprojection_info.xy_names,
-                                         src_xy_tp_var_names=reprojection_info.xy_tp_names,
-                                         src_xy_crs=reprojection_info.xy_crs,
-                                         src_xy_gcp_step=reprojection_info.xy_gcp_step or 1,
-                                         src_xy_tp_gcp_step=reprojection_info.xy_tp_gcp_step or 1,
-                                         dst_size=output_geom.size,
-                                         dst_region=output_geom.xy_bbox,
-                                         dst_resampling=output_resampling,
-                                         include_non_spatial_vars=include_non_spatial_vars)
+        return dataset
 
 
 class DefaultInputProcessor(XYInputProcessor):

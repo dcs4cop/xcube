@@ -1,4 +1,25 @@
-## Changes in 0.6.2 (in development)
+## Changes in 0.7.0 (in development)
+
+* Numerous breaking changes have been applied to this version
+  in order to address generic resampling (#391) and support other
+  CRS than WGS-84 (#112): 
+  * The following components have been removed entirely 
+    - module `xcube.core.imgeom` with class `ImageGeom` 
+    - module `xcube.core.geocoding` with class `GeoCoding`
+    - module `xcube.core.reproject` and all its functions
+  * The following components have been added 
+    - module `xcube.core.gridmapping` with new class `GridMapping`
+      is a CF compliant replacement for classes `ImageGeom` and `GeoCoding`
+  * The following components have changed in an incompatible way:
+    - Function`xcube.core.rectify.rectify_dataset()` now uses 
+      `source_gm: GridMapping` and `target_gm: GridMapping` instead of 
+      `geo_coding: GeoCoding` and `output_geom: ImageGeom`. 
+    - Function`xcube.core.gen.iproc.InputProcessor.process()` now uses 
+      `source_gm: GridMapping` and `target_gm: GridMapping` instead of 
+      `geo_coding: GeoCoding` and `output_geom: ImageGeom`. 
+  * xcube no longer depends on GDAL (at least not directly).
+  
+* Removed example notebooks that used hard-coded local file paths. (#400)
 
 * Fixed unit tests broken by accident. (#396)
 
