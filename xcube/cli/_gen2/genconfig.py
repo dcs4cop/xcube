@@ -172,29 +172,31 @@ class CubeConfig:
                  bbox: Tuple[float, float, float, float] = None,
                  spatial_res: float = None,
                  time_range: Tuple[str, Optional[str]] = None,
-                 time_period: str = None):
-        assert_given(variable_names, 'variable_names')
-        assert_given(bbox, 'bbox')
-        assert_given(spatial_res, 'spatial_res')
-        assert_given(time_range, 'time_range')
-        self.variable_names = tuple(variable_names)
-        self.crs = str(crs)
-        self.bbox = tuple(bbox)
-        self.spatial_res = float(spatial_res)
-        self.time_range = tuple(time_range)
-        self.time_period = str(time_period)
+                 time_period: str = None,
+                 time_aggregator: str = None,
+                 snap_to_grid: bool = True):
+        self.variable_names = tuple(variable_names) if variable_names is not None else None
+        self.crs = str(crs) if crs else None
+        self.bbox = tuple(bbox) if bbox else None
+        self.spatial_res = float(spatial_res) if spatial_res is not None else None
+        self.time_range = tuple(time_range) if time_range else None
+        self.time_period = str(time_period) if time_period else None
+        self.time_aggregator = str(time_aggregator) if time_aggregator else None
+        self.snap_to_grid = bool(snap_to_grid) if snap_to_grid is not None else None
 
     def to_dict(self):
-        d = dict(
-            variable_names=list(self.variable_names),
-            bbox=list(self.bbox),
-            spatial_res=float(self.spatial_res),
-            time_range=list(self.time_range)
-        )
-        if self.crs:
-            d.update(crs=str(self.crs))
-        if self.time_period:
-            d.update(time_period=str(self.time_period))
+        d = dict()
+        for k in ('variable_names',
+                  'crs',
+                  'bbox',
+                  'spatial_res',
+                  'time_range',
+                  'time_period',
+                  'time_aggregator',
+                  'snap_to_grid'):
+            v = getattr(self, k)
+            if v is not None:
+                d.update({k: v})
         return d
 
     @classmethod
@@ -202,8 +204,9 @@ class CubeConfig:
         return JsonObjectSchema(
             properties=dict(
                 variable_names=JsonArraySchema(
+                    nullable=True,
                     items=JsonStringSchema(min_length=1),
-                    min_items=0
+                    min_items=0,
                 ),
                 crs=JsonStringSchema(
                     nullable=True,
@@ -225,8 +228,14 @@ class CubeConfig:
                     nullable=True,
                     pattern=r'^([1-9][0-9]*)?[DWMY]$'
                 ),
+                time_aggregator=JsonStringSchema(
+                    nullable=True,
+                    enum=[],
+                ),
+                snap_to_grid=JsonBooleanSchema(
+                    nullable=True
+                ),
             ),
-            required=['variable_names'],
             additional_properties=False,
             factory=cls
         )

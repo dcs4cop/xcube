@@ -49,7 +49,9 @@ def open_cubes(input_configs: Sequence[InputConfig],
                     opener_ids = store.get_data_opener_ids(data_id=input_config.data_id,
                                                            type_specifier=TYPE_SPECIFIER_CUBE)
                     if not opener_ids:
-                        raise DataStoreError(f'Data store "{input_config.store_id}" does not support data cubes')
+                        raise DataStoreError(f'Data resource "{input_config.data_id}" of store '
+                                             f'"{input_config.store_id}" not found or has no '
+                                             f'data cube representation')
                     opener_id = opener_ids[0]
                 opener = store
                 open_params.update(opener_id=opener_id, **input_config.open_params)

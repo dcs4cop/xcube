@@ -27,6 +27,7 @@ import xarray as xr
 from xcube.cli._gen2.genconfig import CubeConfig
 from xcube.core.gridmapping import GridMapping
 from xcube.core.resampling import resample_in_space
+from xcube.core.resampling import resample_in_time
 from xcube.util.progress import observe_progress
 
 
@@ -36,12 +37,22 @@ def resample_and_merge_cubes(cubes: List[xr.Dataset],
     if len(cubes) == 1:
         return first_cube
 
-    target_gm = get_target_grid_mapping(first_cube, cube_config)
+    first_gm = GridMapping.from_dataset(first_cube)
+    if not first_gm.is_regular:
+        first_gm = first_gm.to_regular()
+
+    target_gm = get_target_grid_mapping(first_gm, cube_config)
 
     with observe_progress('Resampling cube(s)', len(cubes) + 1) as progress:
         resampled_cubes = []
         for cube in cubes:
-            resampled_cube = resample_in_space(cube, target_gm=target_gm)
+            source_gm = first_gm if cube is first_cube else GridMapping.from_dataset(cube)
+            if target_gm.is_close(source_gm):
+                resampled_cube = cube
+            else:
+                resampled_cube = resample_in_space(cube, source_gm=source_gm, target_gm=target_gm)
+
+            # resample_in_time(resampled_cube, frequency=cube_config.time_period, method=)
             resampled_cubes.append(resampled_cube)
             progress.worked(1)
         merged_cube = xr.merge(resampled_cubes) if len(resampled_cubes) > 1 else resampled_cubes[0]
@@ -49,10 +60,7 @@ def resample_and_merge_cubes(cubes: List[xr.Dataset],
         return merged_cube
 
 
-def get_target_grid_mapping(first_cube: xr.Dataset, cube_config: CubeConfig) -> GridMapping:
-    source_gm = GridMapping.from_dataset(first_cube)
-    if not source_gm.is_regular:
-        source_gm = source_gm.to_regular()
+def get_target_grid_mapping(source_gm: GridMapping, cube_config: CubeConfig) -> GridMapping:
     if cube_config.spatial_res is not None:
         xy_res = (cube_config.spatial_res, cube_config.spatial_res)
     else:
