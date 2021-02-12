@@ -11,6 +11,14 @@
   with observe_dask_progress('Writing dataset', 100):
       dataset.to_zarr(store)  
   ```
+* xcube progress monitoring can deal with multiple nested progress monitors. Progress from different threads are handled separately.
+* Added new context manager `xcube.util.observe_dask_nested_progress()` that can be used
+  to observe tasks that are known to be dominated by Dask computations with nested xcube progress monitoring: 
+   
+  ```python
+  with observe_nested_dask_progress('Writing dataset', num_measured_sub_processes=100):
+      dataset.to_zarr(store)  
+  ```
 
 ## Changes in 0.6.1
 

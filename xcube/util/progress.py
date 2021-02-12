@@ -22,25 +22,30 @@
 import threading
 import time
 import traceback
+import weakref
 from abc import ABC
 from typing import Sequence, Optional, Any, Tuple, Type, List
 
 import dask.callbacks
-import dask.diagnostics
 
-from xcube.util.assertions import assert_condition, assert_given
+from xcube.util.assertions import assert_condition, assert_given, assert_in
 
 
 class ProgressState:
     """Represents the state of progress."""
 
-    def __init__(self, label: str, total_work: float, super_work: float):
+    def __init__(self, label: str, total_work: float,
+                 parent_state: 'ProgressState' = None, trace: List[str] = None):
         self._label = label
         self._total_work = total_work
-        self._super_work = super_work
+        self._ident = threading.get_ident()
+        self._parent = parent_state
+        self._stack = None
+        self._super_work = parent_state.super_work_ahead if parent_state else 1
         self._super_work_ahead = 1.
+        self._child_idents = []
         self._exc_info = None
-        self._traceback = None
+        self._traceback = trace if trace else []
         self._completed_work = 0.
         self._finished = False
         self._start_time = None
@@ -54,6 +59,18 @@ class ProgressState:
     @property
     def total_work(self) -> float:
         return self._total_work
+
+    @property
+    def ident(self) -> int:
+        return self._ident
+
+    @property
+    def parent(self) -> 'ProgressState':
+        return self._parent
+
+    @property
+    def traceback(self) -> List[str]:
+        return self._traceback
 
     @property
     def super_work(self) -> float:
@@ -107,10 +124,31 @@ class ProgressState:
     def inc_work(self, work: float):
         assert_condition(work > 0, 'work must be greater than zero')
         self._completed_work += work
+        if self._parent:
+            work = self.to_super_work(work)
+            self._parent.inc_work(work)
 
     def finish(self):
         self._finished = True
         self._total_time = time.perf_counter() - self._start_time
+
+    @property
+    def stack(self) -> List['ProgressState']:
+        if not self._stack:
+            self._stack = list()
+            self._stack.append(self)
+            previous_state = self._parent
+            while previous_state:
+                self._stack.insert(0, previous_state)
+                previous_state = previous_state.parent
+        return self._stack
+
+    @property
+    def child_idents(self) -> List[int]:
+        return self._child_idents
+
+    def set_child_idents(self, idents: List[str]):
+        self._child_idents = idents
 
 
 class ProgressObserver(ABC):
@@ -146,7 +184,7 @@ class _ProgressContext:
 
     def __init__(self, *observers: ProgressObserver):
         self._observers = set(observers)
-        self._state_stack = list()
+        self._states = set()
 
     def add_observer(self, observer: ProgressObserver):
         self._observers.add(observer)
@@ -154,48 +192,93 @@ class _ProgressContext:
     def remove_observer(self, observer: ProgressObserver):
         self._observers.discard(observer)
 
-    def emit_begin(self):
+    def emit_begin(self, state_stack: List[ProgressState]):
         for observer in self._observers:
-            observer.on_begin(self._state_stack)
+            observer.on_begin(state_stack)
 
-    def emit_update(self):
+    def emit_update(self, state_stack: List[ProgressState]):
         for observer in self._observers:
-            observer.on_update(self._state_stack)
+            observer.on_update(state_stack)
 
-    def emit_end(self):
+    def emit_end(self, state_stack: List[ProgressState]):
         for observer in self._observers:
-            observer.on_end(self._state_stack)
+            observer.on_end(state_stack)
 
     def begin(self, label: str, total_work: float) -> ProgressState:
-        super_work = self._state_stack[-1].super_work_ahead if self._state_stack else 1
-        progress_state = ProgressState(label, total_work, super_work)
-        self._state_stack.append(progress_state)
-        self.emit_begin()
+        trace = traceback.format_stack()
+        parent_state = self._get_parent_state(trace)
+        progress_state = ProgressState(label, total_work, parent_state, trace)
+        self._states.add(progress_state)
+        self.emit_begin(progress_state.stack)
         return progress_state
 
-    def end(self, exc_type, exc_value, exc_traceback) -> ProgressState:
+    def _get_parent_state(self, traceback: List[str]) -> Optional[ProgressState]:
+        parent_state = None
+        max_match = 0
+        ident = threading.get_ident()
+        # preventing set modification during iteration
+        states = self._states.copy()
+        for state in states:
+            if ident != state.ident:
+                continue
+            max_match_candidate = len(state.traceback)
+            if len(traceback) < max_match_candidate or max_match_candidate < max_match:
+                continue
+            # the observer of the potential parent state is declared at index - 3 in the traceback
+            # we check whether file and method match and the parent state's line number is smaller
+            index = len(state.traceback) - 3
+            if not self._may_be_parent_line(traceback[index], state.traceback[index]):
+                continue
+            index -= 1
+            while index > 0:
+                if traceback[index] != state.traceback[index]:
+                    break
+                index-=1
+            if index > 0:
+                continue
+            parent_state = state
+            max_match = max_match_candidate
+        if parent_state is None:
+            for state in self._states:
+                if ident in state.child_idents:
+                    parent_state = state
+                    break
+        return parent_state
+
+    def _may_be_parent_line(self, state_traceback_line: str, parent_traceback_line: str):
+        state_file_part, state_line_number, state_method_part = \
+            self._dissect_traceline(state_traceback_line)
+        parent_file_part, parent_line_number, parent_method_part = \
+            self._dissect_traceline(parent_traceback_line)
+        return state_file_part == parent_file_part and state_method_part == parent_method_part \
+               and state_line_number > parent_line_number
+
+    @staticmethod
+    def _dissect_traceline(line: str):
+        first_split_line = line.split('\n')[0]
+        line_parts = first_split_line.split('line')
+        file_part = line_parts[0]
+        in_file_parts = line_parts[1].split(',')
+        return file_part, int(in_file_parts[0]), in_file_parts[1]
+
+    def end(self, progress_state, exc_type, exc_value, exc_traceback):
         exc_info = tuple((exc_type, exc_value, exc_traceback))
-        progress_state = self._state_stack[-1]
         progress_state.exc_info = exc_info if any(exc_info) else None
         progress_state.finish()
-        self.emit_end()
-        self._state_stack.pop()
-        if self._state_stack:
-            self._state_stack[-1].super_work_ahead = 1
-        return progress_state
+        self.emit_end(progress_state.stack)
+        self._states.remove(progress_state)
+        if progress_state.parent:
+            progress_state.parent.super_work_ahead = 1
 
-    def worked(self, work: float):
-        assert_condition(self._state_stack, 'worked() method call is missing a current context')
+    def worked(self, progress_state: ProgressState, work: float):
+        assert_in(progress_state, self._states)
         assert_condition(work > 0, 'work must be greater than zero')
-        for s in reversed(self._state_stack):
-            s.inc_work(work)
-            work = s.to_super_work(work)
-        self.emit_update()
+        progress_state.inc_work(work)
+        self.emit_update(progress_state.stack)
 
-    def will_work(self, work: float):
-        assert_condition(self._state_stack, 'will_work() method call is missing a current context')
-        # noinspection PyProtectedMember
-        self._state_stack[-1].super_work_ahead = work
+    def will_work(self, progress_state: ProgressState, work: float):
+        assert_in(progress_state, self._states)
+        progress_state.super_work_ahead = work
 
     @classmethod
     def instance(cls) -> '_ProgressContext':
@@ -282,20 +365,21 @@ class observe_progress:
         return self
 
     def __exit__(self, type, value, traceback):
-        _ProgressContext.instance().end(type, value, traceback)
+        _ProgressContext.instance().end(self._state, type, value, traceback)
 
     # noinspection PyMethodMayBeStatic
     def worked(self, work: float):
         self._assert_used_correctly()
-        _ProgressContext.instance().worked(work)
+        _ProgressContext.instance().worked(self._state, work)
 
     # noinspection PyMethodMayBeStatic
     def will_work(self, work: float):
         self._assert_used_correctly()
-        _ProgressContext.instance().will_work(work)
+        _ProgressContext.instance().will_work(self._state, work)
 
     def _assert_used_correctly(self):
-        assert_condition(self._state is not None, 'observe_progress() must be used with "with" statement')
+        assert_condition(self._state is not None,
+                         'observe_progress() must be used with "with" statement')
 
 
 class observe_dask_progress(dask.callbacks.Callback):
@@ -331,7 +415,7 @@ class observe_dask_progress(dask.callbacks.Callback):
 
     def __exit__(self, type, value, traceback):
         self._stop_thread()
-        _ProgressContext.instance().end(type, value, traceback)
+        _ProgressContext.instance().end(self._state, type, value, traceback)
         super().__exit__(type, value, traceback)
 
     # noinspection PyUnusedLocal
@@ -382,10 +466,49 @@ class observe_dask_progress(dask.callbacks.Callback):
             worked = work_fraction * self._total_work
             work = worked - self._last_worked
             if work > 0:
-                _ProgressContext.instance().worked(work)
+                _ProgressContext.instance().worked(self._state, work)
                 self._last_worked = worked
 
     def _stop_thread(self):
         if self._running:
             self._running = False
             self._timer.join()
+
+
+class observe_nested_dask_progress(dask.callbacks.Callback):
+    """
+    Observe progress made by Dask tasks that have nested progress monitors.
+
+    :param label: A label.
+    :param num_measured_sub_processes: The number of sub processes with progress monitors.
+    """
+
+    def __init__(self,
+                 label: str,
+                 num_measured_sub_processes: float):
+        super().__init__()
+        assert_given(label, 'label')
+        assert_condition(num_measured_sub_processes > 0, 'total_work must be greater than zero')
+        self._label = label
+        self._total_work = num_measured_sub_processes
+        self._state: Optional[ProgressState] = None
+        from multiprocessing.dummy import active_children
+        self._active_children = active_children
+        progress_thread = threading.current_thread()
+        if not hasattr(progress_thread, '_children'):
+            progress_thread._children = weakref.WeakKeyDictionary()
+
+    def __enter__(self) -> 'observe_nested_dask_progress':
+        super().__enter__()
+        self._state = _ProgressContext.instance().begin(self._label, self._total_work)
+        return self
+
+    def __exit__(self, type, value, traceback):
+        _ProgressContext.instance().end(self._state, type, value, traceback)
+        super().__exit__(type, value, traceback)
+
+    # noinspection PyUnusedLocal
+    def _pretask(self, key, dsk, state):
+        """Dask callback implementation."""
+        child_idents = [active_child.ident for active_child in self._active_children()]
+        self._state.set_child_idents(child_idents)

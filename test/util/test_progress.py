@@ -1,3 +1,5 @@
+import random
+import time
 import unittest
 from typing import Sequence
 
@@ -9,6 +11,7 @@ from xcube.util.progress import ProgressState
 from xcube.util.progress import add_progress_observers
 from xcube.util.progress import new_progress_observers
 from xcube.util.progress import observe_dask_progress
+from xcube.util.progress import observe_nested_dask_progress
 from xcube.util.progress import observe_progress
 
 
@@ -234,6 +237,36 @@ class ObserveProgressTest(unittest.TestCase):
         self.assertEqual('Failed to load', exc_value)
         self.assertIsInstance(exc_traceback, list)
 
+    def test_observe_asynchronous_progress(self):
+        import asyncio
+
+        async def do_something_async(i):
+            with observe_progress(f"Doing something asynchronous #({i})", 3) as nested_reporter:
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+
+        async def gather_tasks():
+            tasks = []
+            for i in range(3):
+                tasks.append(do_something_async(i + 1))
+            await asyncio.gather(*tasks)
+
+        observer = MyProgressObserver()
+        observer.activate()
+        with observe_progress("Reporting something asynchronous", 3) as reporter:
+            reporter.will_work(3)
+            asyncio.run(gather_tasks())
+
+        self.assertEqual(('begin', [('Reporting something asynchronous', 0.0, False)]),
+                         observer.calls[0])
+        self.assertEqual(('end', [('Reporting something asynchronous', 3.0, True)]),
+                         observer.calls[-1])
+
+
     def test_dask_progress(self):
         observer = MyProgressObserver(record_errors=True)
         observer.activate()
@@ -249,10 +282,41 @@ class ObserveProgressTest(unittest.TestCase):
         self.assertEqual(('end', [('computing', 15 / 16, True, None)]), observer.calls[-1])
 
 
+    def test_nested_dask_progress(self):
+        observer = MyProgressObserver(record_errors=True)
+        observer.activate()
+
+        def _func(x):
+            with observe_progress(f'Doing internal dask task {x}', 2) as nested_reporter:
+                time.sleep(0.1 * random.random() * x)
+                nested_reporter.worked(1)
+                time.sleep(0.1 * random.random() * x)
+                nested_reporter.worked(1)
+                return x
+
+        _func2 = dask.delayed(_func)
+        x = _func2(1)
+        y = _func2(2)
+        z = _func2(3)
+        def _nest_func(x, y, z):
+            return x + y + z
+        _nest_func2 = dask.delayed(_nest_func)
+        a = _nest_func2(x, y, z)
+
+        with observe_nested_dask_progress('Doing some tasks', 3):
+            a.compute()
+
+        self.assertTrue(len(observer.calls) == 14)
+        self.assertEqual(('begin', [('Doing some tasks', 0.0, False, None)]), observer.calls[0])
+        self.assertEqual(('end', [('Doing some tasks', 1.0, True, None)]), observer.calls[13])
+
+
 class ProgressStateTest(unittest.TestCase):
 
     def test_progress_state_props(self):
-        state = ProgressState('computing', 100, 3)
+        parent_state = ProgressState('observing', 3)
+        parent_state.super_work_ahead = 3
+        state = ProgressState('computing', 100, parent_state)
         self.assertEqual('computing', state.label)
         self.assertEqual(100, state.total_work)
         self.assertEqual(3, state.super_work)

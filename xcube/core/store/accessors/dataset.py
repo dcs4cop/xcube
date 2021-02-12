@@ -33,6 +33,7 @@ from xcube.util.jsonschema import JsonArraySchema
 from xcube.util.jsonschema import JsonBooleanSchema
 from xcube.util.jsonschema import JsonObjectSchema
 from xcube.util.jsonschema import JsonStringSchema
+from xcube.util.progress import observe_nested_dask_progress
 
 
 class DatasetNetcdfPosixDataAccessor(PosixDataDeleterMixin, DataWriter, DataOpener):
@@ -151,7 +152,14 @@ class DatasetZarrPosixAccessor(ZarrOpenerParamsSchemaMixin,
 
     def write_data(self, data: xr.Dataset, data_id: str, replace=False, **write_params):
         assert_instance(data, xr.Dataset, 'data')
-        data.to_zarr(data_id, mode='w' if replace else None, **write_params)
+        total_num_chunks = 0
+        for data_var in data.data_vars:
+            num_data_var_chunks = 1
+            for chunks in data[data_var].chunks:
+                num_data_var_chunks *= len(chunks)
+            total_num_chunks += num_data_var_chunks
+        with observe_nested_dask_progress('Writing data', total_num_chunks):
+            data.to_zarr(data_id, mode='w' if replace else None, **write_params)
 
 
 #######################################################
