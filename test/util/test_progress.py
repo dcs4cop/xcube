@@ -252,7 +252,9 @@ class ObserveProgressTest(unittest.TestCase):
 class ProgressStateTest(unittest.TestCase):
 
     def test_progress_state_props(self):
-        state = ProgressState('computing', 100, 3)
+        parent_state = ProgressState('observing', 3)
+        parent_state.super_work_ahead = 3
+        state = ProgressState('computing', 100, parent_state)
         self.assertEqual('computing', state.label)
         self.assertEqual(100, state.total_work)
         self.assertEqual(3, state.super_work)
@@ -264,3 +266,40 @@ class ProgressStateTest(unittest.TestCase):
         self.assertEqual(15, state.completed_work)
         self.assertEqual(0.15, state.progress)
         self.assertEqual(0.6, state.to_super_work(20))
+
+
+class AsyncProgressTest(unittest.TestCase):
+
+    def test_asynchronous_progress(self):
+        """
+        This test ensures that progress can be monitored across processes that are run
+        asynchronously by asyncio. It runs three tasks that report progress simultaneously and
+        ensures that in the end the observer finishes with the correct total work.
+        """
+        import asyncio
+
+        async def do_something_async(i):
+            with observe_progress(f"Doing something asynchronous #({i})", 3) as nested_reporter:
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+                await asyncio.sleep(0.01)
+                nested_reporter.worked(1)
+
+        async def gather_tasks():
+            tasks = []
+            for i in range(3):
+                tasks.append(do_something_async(i + 1))
+            await asyncio.gather(*tasks)
+
+        observer = MyProgressObserver()
+        observer.activate()
+        with observe_progress("Reporting something asynchronous", 3) as reporter:
+            reporter.will_work(3)
+            asyncio.run(gather_tasks())
+
+        self.assertEqual(('begin', [('Reporting something asynchronous', 0.0, False)]),
+                         observer.calls[0])
+        self.assertEqual(('end', [('Reporting something asynchronous', 3.0, True)]),
+                         observer.calls[-1])

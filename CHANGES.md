@@ -11,6 +11,7 @@
   with observe_dask_progress('Writing dataset', 100):
       dataset.to_zarr(store)  
   ```
+* xcube progress monitoring can deal with multiple nested progress monitors. Progress from different threads are handled separately.   
 
 ## Changes in 0.6.1
 
