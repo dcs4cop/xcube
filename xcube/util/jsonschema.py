@@ -38,7 +38,51 @@ _TYPES_ENUM = {'null', 'boolean', 'integer', 'number', 'string', 'array', 'objec
 _NUMERIC_TYPES_ENUM = {'integer', 'number'}
 
 
-class JsonSchema(ABC):
+class JsonObject(ABC):
+    """
+    The abstract base class for objects
+
+    * whose instances can be created from a JSON-serializable
+      dictionary using their :meth:from_dict class method;
+    * whose instances can be converted into a JSON-serializable dictionary
+      using their :meth:to_dict instance method.
+
+    Derived concrete classes must only implement the :meth:get_schema class method
+    that must return a :class:JsonObjectSchema.
+
+    Instances of this class have a JSON representation in Jupyter/IPython Notebooks.
+    """
+
+    @classmethod
+    @abstractmethod
+    def get_schema(cls) -> 'JsonObjectSchema':
+        """Get JSON object schema."""
+
+    @classmethod
+    def from_dict(cls, value: Dict[str, Any]) -> 'JsonObject':
+        """Create instance from JSON-serializable dictionary *value*."""
+        return cls.get_schema().from_instance(value)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Create JSON-serializable dictionary representation."""
+        return self.get_schema().to_instance(self)
+
+
+class JsonSchema(JsonObject, ABC):
+    """
+    The abstract base class for JSON Schema objects.
+
+    :param type:
+    :param default:
+    :param const:
+    :param enum:
+    :param nullable:
+    :param title:
+    :param description:
+    :param examples:
+    :param factory:
+    :param serializer:
+    """
 
     # noinspection PyShadowingBuiltins
     def __init__(self,
@@ -92,6 +136,90 @@ class JsonSchema(ABC):
         if self.examples is not None:
             d.update(examples=self.examples)
         return d
+
+    @classmethod
+    def from_dict(cls, value: Dict[str, Any]) -> 'JsonObject':
+        type_name = value.pop('type', None)
+        nullable = False
+        if isinstance(type_name, (list, tuple)):
+            types = set(type_name)
+            if 'null' in types:
+                nullable = True
+                types.remove('null')
+                if len(types) == 1:
+                    type_name = next(iter(types))
+                else:
+                    raise ValueError(f'cannot convert type "{type_name}"')
+        elif not isinstance(type_name, str):
+            raise ValueError(f'cannot convert type "{type_name}"')
+
+        params = dict(value)
+
+        base_props = ['default', 'const', 'enum', 'title', 'description', 'examples']
+        base_kwargs = {k: params.pop(k) for k in base_props if k in params}
+        if nullable:
+            base_kwargs['nullable'] = True
+
+        extra_kwargs = {}
+
+        if type_name == 'null':
+            sub_class = JsonNullSchema
+        elif type_name == 'boolean':
+            sub_class = JsonBooleanSchema
+        elif type_name == 'string':
+            extra_props = ['format', 'pattern', 'pattern', 'min_length', 'max_length']
+            extra_kwargs = {k: params.pop(k) for k in extra_props if k in params}
+            sub_class = JsonStringSchema
+        elif type_name == 'number' or type_name == 'integer':
+            extra_props = ['minimum', 'maximum', 'exclusive_minimum', 'exclusive_maximum', 'multiple_of']
+            extra_kwargs = {k: params.pop(k) for k in extra_props if k in params}
+            sub_class = JsonIntegerSchema if type_name == 'integer' else JsonNumberSchema
+        elif type_name == 'array':
+            extra_props = ['min_items', 'max_items', 'unique_items']
+            extra_kwargs = {k: params.pop(k) for k in extra_props if k in params}
+            if 'items' in params:
+                items = params.pop('items')
+                extra_kwargs['items'] = [JsonSchema.from_dict(item) for item in items]
+            sub_class = JsonArraySchema
+        elif type_name == 'object':
+            extra_props = ['min_properties', 'max_properties', 'required']
+            extra_kwargs = {k: params.pop(k) for k in extra_props if k in params}
+            if 'properties' in params:
+                properties = params.pop('properties')
+                extra_kwargs['properties'] = {k: JsonSchema.from_dict(v)
+                                              for k, v in properties.items()}
+            if 'additional_properties' in params:
+                additional_properties = params.pop('additional_properties')
+                if isinstance(additional_properties, dict):
+                    extra_kwargs['additional_properties'] = JsonSchema.from_dict(additional_properties)
+                else:
+                    extra_kwargs['additional_properties'] = additional_properties
+            if 'dependencies' in params:
+                dependencies = params.pop('dependencies')
+                extra_kwargs['dependencies'] = {k: (JsonSchema.from_dict(v) if isinstance(v, dict) else v)
+                                                for k, v in dependencies.items()}
+            sub_class = JsonObjectSchema
+        else:
+            raise ValueError(f'cannot convert type "{type_name}"')
+
+        if params:
+            raise ValueError(f'unknown schema parameter(s): {params}')
+
+        return sub_class(**base_kwargs, **extra_kwargs)
+
+    @classmethod
+    def get_schema(cls) -> 'JsonSchema':
+        return JsonObjectSchema(
+            properties=dict(
+                type=JsonStringSchema(),
+                properties=JsonObjectSchema(additional_properties=True),
+                dependencies=JsonObjectSchema(additional_properties=True),
+                required=JsonArraySchema(JsonStringSchema()),
+                # TODO: Add more
+            ),
+            required=['type'],
+            additional_properties=True,
+        )
 
     def validate_instance(self, instance: Any):
         """Validate JSON value *instance*."""
@@ -557,36 +685,6 @@ class JsonObjectSchema(JsonSchema):
                     converted_mapping[property_name] = property_value
 
         return converted_mapping
-
-
-class JsonObject(ABC):
-    """
-    The abstract base class for objects
-
-    * whose instances can be created from a JSON-serializable
-      dictionary using their :meth:from_dict class method;
-    * whose instances can be converted into a JSON-serializable dictionary
-      using their :meth:to_dict instance method.
-
-    Derived concrete classes must only implement the :meth:get_schema class method
-    that must return a :class:JsonObjectSchema.
-
-    Instances of this class have a JSON representation in Jupyter/IPython Notebooks.
-    """
-
-    @classmethod
-    @abstractmethod
-    def get_schema(cls) -> JsonObjectSchema:
-        """Get JSON object schema."""
-
-    @classmethod
-    def from_dict(cls, value: Dict[str, Any]) -> 'JsonObject':
-        """Create instance from JSON-serializable dictionary *value*."""
-        return cls.get_schema().from_instance(value)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Create JSON-serializable dictionary representation."""
-        return self.get_schema().to_instance(self)
 
 
 register_json_formatter(JsonSchema)
