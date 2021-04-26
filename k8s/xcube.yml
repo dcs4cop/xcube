@@ -1,0 +1,127 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: xcube-server-ingress
+  namespace: xc-viewer-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+#  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+    - secretName: tls-secret
+      hosts:
+      - dev.xcube.brockmann-consult.de
+  rules:
+#     - host: dev.xcube.brockmann-consult.de
+     - http:
+        paths:
+          - path: /server/(.*)
+            backend:
+              serviceName: xcube-server
+              servicePort: 80
+
+---
+# xcube server
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcube-server
+  namespace: xc-viewer-app
+spec:
+  selector:
+    app: xcube-server
+  ports:
+    - protocol: "TCP"
+      name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: xcube-volume-claim
+  namespace: xc-viewer-app
+spec:
+  storageClassName: gp2
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xcube-config-map
+  namespace: xc-viewer-app
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcube-server
+  namespace: xc-viewer-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: xcube-server
+  template:
+    metadata:
+      labels:
+        app: xcube-server
+        track: stable
+    spec:
+      containers:
+        - name: xcube-server
+          image: "quay.io/bcdev/xcube:0.8.0.dev7"
+          ports:
+            - name: http
+              containerPort: 8080
+          command:
+            ["/bin/bash", "-c", "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix server -c /etc/xcube/conf/config.yml"]
+          volumeMounts:
+            - name: xcube-config-path
+              mountPath: /etc/xcube/conf              
+            - name: xcube-data-path
+              mountPath: /etc/xcube/data
+      volumes:
+        - name: xcube-config-path
+          configMap:
+            items:
+            - key: config.yml
+              path: config.yml
+            name: xcube-config-map            
+        - name: xcube-data-path
+          persistentVolumeClaim:
+            claimName: xcube-volume-claim
+      # imagePullSecrets:
+      #   - name: regcred
+      # imagePullPolicy: Always
+      #   - name: health
+      #     containerPort: 81
+      # resources:
+      #   limits:
+      #     cpu: 0.2
+      #     memory: "10Mi"
+      # livenessProbe:
+      #   httpGet:
+      #     path: /healthz
+      #     port: 81
+      #     scheme: HTTP
+      #   initialDelaySeconds: 5
+      #   periodSeconds: 15
+      #   timeoutSeconds: 5
+      # readinessProbe:
+      #   httpGet:
+      #     path: /readiness
+      #     port: 81
+      #     scheme: HTTP
+      #   initialDelaySeconds: 5
+      #   timeoutSeconds: 1
