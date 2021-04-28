@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: s3fs-fuse
+  namespace: default
+  labels:
+    app: s3fs-fuse
+spec:
+  selector:
+    matchLabels:
+      app: s3fs-fuse
+  template:
+    metadata:
+      labels:
+        app: s3fs-fuse
+    spec:
+      containers:
+      - name: s3fs-fuse
+        image: efrecon/s3fs
+        env:
+          - name: AWS_S3_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: s3fs-fuse
+                key: S3_BUCKET
+          - name: AWS_S3_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: s3fs-fuse
+                key: AWS_S3_ACCESS_KEY_ID
+          - name: AWS_S3_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: s3fs-fuse
+                key: AWS_S3_SECRET_ACCESS_KEY
+        volumeMounts:
+          - name: devfuse
+            mountPath: /dev/fuse
+          - name: mntdatas3fs
+            mountPath: /var/s3fs:rshared
+      volumes:
+        - name: devfuse
+          hostPath:
+            path: /dev/fuse
+        - name: mntdatas3fs
+          hostPath:
+            path: /mnt/s3data
+
