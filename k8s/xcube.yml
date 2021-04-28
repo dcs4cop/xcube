@@ -39,27 +39,27 @@ spec:
       targetPort: 8080
   type: ClusterIP
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: xcube-volume-claim
-  namespace: xc-viewer-app
-spec:
-  storageClassName: gp2
-  volumeMode: Filesystem
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: xcube-volume-claim
+#   namespace: xc-viewer-app
+# spec:
+#   storageClassName: gp2
+#   volumeMode: Filesystem
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 10Gi
 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: xcube-config-map
-  namespace: xc-viewer-app
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: xcube-config-map
+#   namespace: xc-viewer-app
 
 ---
 apiVersion: apps/v1
@@ -81,26 +81,27 @@ spec:
       containers:
         - name: xcube-server
           image: "quay.io/bcdev/xcube:0.8.0.dev7"
+          securityContext:
+            privileged: true  
+            runAsUser: 0
           ports:
             - name: http
               containerPort: 8080
           command:
-            ["/bin/bash", "-c", "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix server -c /etc/xcube/conf/config.yml"]
+            ["/bin/bash", "-c", "source activate xcube && xcube --traceback serve -v --address 0.0.0.0 --port 8080 --revprefix server -c /xcube/examples/demo/config.yml"]
           volumeMounts:
-            - name: xcube-config-path
-              mountPath: /etc/xcube/conf              
             - name: xcube-data-path
-              mountPath: /etc/xcube/data
+              mountPath: /xcube/examples
       volumes:
-        - name: xcube-config-path
-          configMap:
-            items:
-            - key: config.yml
-              path: config.yml
-            name: xcube-config-map            
+        # - name: xcube-data-path
+        #   configMap:
+        #     items:
+        #     - key: config.yml
+        #       path: config.yml
+        #     name: xcube-config-map            
         - name: xcube-data-path
-          persistentVolumeClaim:
-            claimName: xcube-volume-claim
+          hostPath: 
+            path: /mnt/s3data
       # imagePullSecrets:
       #   - name: regcred
       # imagePullPolicy: Always
