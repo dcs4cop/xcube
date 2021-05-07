@@ -1,6 +1,7 @@
 ## Changes in 0.8.2 (in development)
 
-
+* Fixed the issue that xcube gen2 would not print tracebacks to stderr when raising
+  CubeGeneratorErrors (#448).
 
 ## Changes in 0.8.1
 
