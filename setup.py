@@ -21,9 +21,48 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import yaml
-
 from setuptools import setup, find_packages
+
+
+requirements = [
+    "affine >=2.2",
+    "click >=8.0",
+    "cmocean >=2.0",
+    "dask >=2021.6",
+    "dask-image >=0.6",
+    "deprecated >=1.2",
+    "distributed >=2021.6",
+    "fiona >=1.8",
+    # "fontconfig",
+    "fsspec >=2021.6",
+    "gdal >=3.0",
+    "geopandas >=0.8",
+    "jdcal >=1.4",
+    "jsonschema >=3.2",
+    "matplotlib >=3.0",
+    "netcdf4 >=1.5",
+    "numba >=0.52",
+    "numpy >=1.16",
+    # "openssl",
+    "pandas >=1.3",
+    "pillow >=6.0",
+    "pyjwt >=1.7",
+    "pyproj >=3.0",
+    "pyyaml >=5.4",
+    "rasterio >=1.2",
+    "requests >=2.25",
+    "requests-oauthlib >=1.3",
+    "rfc3339-validator >=0.1",  # for python-jsonschema date-time format validation
+    "rioxarray >=0.11",
+    "s3fs >=2021.6",
+    "scipy >=1.6.0",
+    "setuptools >=41.0",
+    "shapely >=1.6",
+    "tornado >=6.0",
+    "urllib3 >=1.26",
+    "xarray >=2022.6",
+    "zarr >=2.11",
+]
 
 # Same effect as "from xcube import version", but avoids importing xcube:
 version = None
@@ -32,26 +71,6 @@ with open('xcube/version.py') as fp:
 
 with open('README.md') as fp:
     description = fp.read()
-
-with open("environment.yml") as fp:
-    environment = yaml.safe_load(fp)
-
-excluded_requirements = [
-    "flake8",         # qa only
-    "moto",           # testing only
-    "openssl",        # not on PyPI
-    "pytest",         # testing only
-    "pytest-cov",     # testing only
-    "python",         # included by default
-    "python-blosc",   # not on PyPI
-    "requests-mock",  # testing only
-]
-
-requirements = [r for r in environment["dependencies"]
-                if (isinstance(r, str)
-                    and r not in excluded_requirements
-                    and not any([r.startswith(er + " ")
-                                 for er in excluded_requirements]))]
 
 packages = find_packages(exclude=["test", "test.*"])
 
