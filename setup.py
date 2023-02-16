@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # The MIT License (MIT)
-# Copyright (c) 2022 by the xcube team and contributors
+# Copyright (c) 2023 by the xcube team and contributors
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -21,54 +21,45 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+import yaml
+
 from setuptools import setup, find_packages
 
-requirements = [
-    #
-    # xcube requirements are given in file ./environment.yml.
-    #
-    # All packages here have been commented out,
-    # because otherwise setuptools will install
-    # additional pip packages although conda packages
-    # with same name are already available
-    # in the conda environment defined by file ./environment.yml.
-    #
-    # 'affine',
-    # 'click',
-    # 'cmocean',
-    # 'dask',
-    # 'fiona',
-    # 'gdal',
-    # 'matplotlib',
-    # 'netcdf4',
-    # 'numba',
-    # 'numpy',
-    # 'pandas',
-    # 'pillow',
-    # 'proj4',
-    # 'pyyaml',
-    # 'rasterio',
-    # 's3fs',
-    # 'setuptools',
-    # 'shapely',
-    # 'tornado',
-    # 'xarray',
-    # 'zarr',
+# Same effect as "from xcube import version", but avoids importing xcube:
+version = None
+with open('xcube/version.py') as fp:
+    exec(fp.read())
+
+with open('README.md') as fp:
+    description = fp.read()
+
+with open("environment.yml") as fp:
+    environment = yaml.safe_load(fp)
+
+excluded_requirements = [
+    "flake8",         # qa only
+    "moto",           # testing only
+    "openssl",        # not on PyPI
+    "pytest",         # testing only
+    "pytest-cov",     # testing only
+    "python",         # included by default
+    "python-blosc",   # not on PyPI
+    "requests-mock",  # testing only
 ]
 
-packages = find_packages(exclude=["test", "test.*"])
+requirements = [r for r in environment["dependencies"]
+                if (isinstance(r, str)
+                    and r not in excluded_requirements
+                    and not any([r.startswith(er + " ")
+                                 for er in excluded_requirements]))]
 
-# Same effect as "from cate import version", but avoids importing cate:
-version = None
-with open('xcube/version.py') as f:
-    exec(f.read())
+packages = find_packages(exclude=["test", "test.*"])
 
 # noinspection PyTypeChecker
 setup(
     name="xcube",
     version=version,
-    description=('xcube is a Python package for generating and exploiting '
-                 'data cubes powered by xarray, dask, and zarr.'),
+    description=description,
     license='MIT',
     author='xcube Development Team',
     packages=packages,
