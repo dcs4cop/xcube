@@ -17,7 +17,7 @@ dependencies:
   - fiona >=1.8
   - fontconfig
   - fsspec >=2021.6
-  - gdal >=3.0
+  - gdal >=3.0,<3.6.3
   - geopandas >=0.8
   - jdcal >=1.4
   - jsonschema >=3.2
