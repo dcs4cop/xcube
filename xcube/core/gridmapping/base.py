@@ -148,6 +148,15 @@ class GridMapping(abc.ABC):
         self._y_coords = y_coords
         self._xy_coords = xy_coords
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = threading.RLock()
+
     def derive(self,
                /,
                xy_var_names: Tuple[str, str] = None,

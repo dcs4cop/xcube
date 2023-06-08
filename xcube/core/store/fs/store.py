@@ -153,6 +153,15 @@ class BaseFsDataStore(DefaultSearchMixin, MutableDataStore):
         self._excludes = self._normalize_wc(excludes)
         self._lock = RLock()
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = RLock()
+
     @property
     def protocol(self) -> str:
         """

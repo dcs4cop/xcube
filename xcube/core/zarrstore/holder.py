@@ -63,6 +63,15 @@ class ZarrStoreHolder:
         self._zarr_store: Optional[collections.abc.MutableMapping] = None
         self._lock = threading.RLock()
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = threading.RLock()
+
     def get(self) -> collections.abc.MutableMapping:
         """Get the Zarr store of a dataset.
         If no Zarr store has been set, the method will use

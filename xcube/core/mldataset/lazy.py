@@ -57,6 +57,15 @@ class LazyMultiLevelDataset(MultiLevelDataset, metaclass=ABCMeta):
         self._parameters = parameters or {}
         self._lock = threading.RLock()
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = threading.RLock()
+
     @property
     def ds_id(self) -> str:
         if self._ds_id is None:
