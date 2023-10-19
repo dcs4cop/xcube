@@ -68,9 +68,11 @@ FS_TYPE_TO_PROTOCOL = {
     'obs': 's3',
     'file': 'file',
     's3': 's3',
-    'memory': 'memory'
+    'memory': 'memory',
+    'cmems': 'cmems'
 }
-NON_MEMORY_FILE_SYSTEMS = ['local', 'obs', 'file', 's3']
+NON_FILE_SYSTEMS = ['cmems']
+NON_MEMORY_SUPPORTED_SYSTEMS = ['local', 'obs', 'file', 's3', 'cmems']
 
 ALL_PLACES = "all"
 
@@ -308,7 +310,7 @@ class DatasetsContext(ResourcesContext):
         assignable_dataset_configs = [
             dc for dc in dataset_configs
             if 'StoreInstanceId' not in dc
-               and dc.get('FileSystem', 'file') in NON_MEMORY_FILE_SYSTEMS
+               and dc.get('FileSystem', 'file') in NON_MEMORY_SUPPORTED_SYSTEMS
         ]
         # split into sub-lists according to file system and
         # non-root store params
@@ -337,7 +339,7 @@ class DatasetsContext(ResourcesContext):
                 store_params_with_root = store_params.copy()
                 if fs_protocol == "file" and not is_absolute_path(root):
                     store_params_with_root['root'] = f"{base_dir}/{root}"
-                else:
+                elif fs_protocol not in NON_FILE_SYSTEMS:
                     store_params_with_root['root'] = root
                 # See if there already is a store with this configuration
                 data_store_config = DataStoreConfig(
@@ -373,20 +375,27 @@ class DatasetsContext(ResourcesContext):
         file_system = FS_TYPE_TO_PROTOCOL.get(
             dataset_config.get('FileSystem', 'file')
         )
-        if file_system != 's3':
+        if file_system == 's3':
+            storage_options = dict()
+            if 'Anonymous' in dataset_config:
+                storage_options['anon'] = dataset_config['Anonymous']
+            client_kwargs = dict(
+            )
+            if 'Endpoint' in dataset_config:
+                client_kwargs['endpoint_url'] = dataset_config['Endpoint']
+            if 'Region' in dataset_config:
+                client_kwargs['region_name'] = dataset_config['Region']
+            storage_options['client_kwargs'] = client_kwargs
+            return dict(storage_options=storage_options)
+        if file_system == 'cmems':
+            store_params = dict()
+            if 'CmemsUserName' in dataset_config:
+                store_params['cmems_username'] = dataset_config['CmemsUserName']
+            if 'CmemsPassword' in dataset_config:
+                store_params['cmems_password'] = dataset_config['CmemsPassword']
+            return store_params
+        else:
             return {}
-        storage_options = dict()
-        if 'Anonymous' in dataset_config:
-            storage_options['anon'] = dataset_config['Anonymous']
-        client_kwargs = dict(
-        )
-        if 'Endpoint' in dataset_config:
-            client_kwargs['endpoint_url'] = dataset_config['Endpoint']
-        if 'Region' in dataset_config:
-            client_kwargs['region_name'] = dataset_config['Region']
-        storage_options['client_kwargs'] = client_kwargs
-        store_params = dict(storage_options=storage_options)
-        return store_params
 
     @classmethod
     def get_dataset_configs_from_stores(

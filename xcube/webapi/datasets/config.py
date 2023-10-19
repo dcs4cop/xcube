@@ -102,6 +102,8 @@ DATASET_CONFIG_SCHEMA = JsonObjectSchema(
         Region=IDENTIFIER_SCHEMA,
         Function=IDENTIFIER_SCHEMA,
         Class=IDENTIFIER_SCHEMA,
+        CmemsUserName=IDENTIFIER_SCHEMA,
+        CmemsPassword=IDENTIFIER_SCHEMA,
         InputDatasets=JsonArraySchema(items=IDENTIFIER_SCHEMA),
         InputParameters=JsonObjectSchema(additional_properties=True),
         **COMMON_DATASET_PROPERTIES,

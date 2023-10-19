@@ -137,6 +137,13 @@ Datasets:
     Path: sample-geotiff.tif
     Style: tif_style
 
+  - Identifier: black_sea_from_cmems
+    Title: Black Sea Waves Reanalysis
+    FileSystem: cmems
+    Path: cmems_mod_blk_wav_my_2.5km_PT1H-i
+    CmemsUserName:
+    CmemsPassword:
+
 PlaceGroups:
   - Identifier: inside-cube
     Title: Places inside the cube

@@ -51,5 +51,5 @@ GEO_BOUNDING_BOX_SCHEMA = JsonArraySchema(
 )
 
 FILE_SYSTEM_SCHEMA = JsonStringSchema(
-    enum=['memory', 'obs', 'local', 's3', 'file']
+    enum=['memory', 'obs', 'local', 's3', 'file', 'cmems']
 )
