@@ -4,7 +4,7 @@
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/xcube/badges/version.svg)](https://anaconda.org/conda-forge/xcube)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/xcube/badges/license.svg)](https://anaconda.org/conda-forge/xcube)
 
-xcube is a Python toolkit for managing EO/climate data cubes. 
+xcube is a Python toolkit for managing geospatial data cubes. 
 
 It is based on popular data science packages such as 
 [xarray](http://xarray.pydata.org/), [Zarr](https://zarr.readthedocs.io/), and [Dask](https://dask.org/).
