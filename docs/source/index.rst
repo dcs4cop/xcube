@@ -14,6 +14,7 @@ cubes from EO data.
    overview
    examples
    installation
+   howdoi
 
 .. toctree::
    :caption: User Guide
@@ -31,6 +32,7 @@ cubes from EO data.
    :maxdepth: 1
 
    cubespec
+   mldatasets
    storeconv
    devguide
    plugins

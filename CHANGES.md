@@ -15,6 +15,8 @@
   Existing docstrings have been converted using the awesome [docconvert](https://github.com/cbillingham/docconvert) 
   tool.
 
+* Added documentation page "How do I ..." that points users to applicable
+  xcube Python API.
 
 ## Changes in 1.4.1
 

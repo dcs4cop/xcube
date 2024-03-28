@@ -61,6 +61,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_annotation',
+    'sphinx_markdown_tables',
     'sphinxarg.ext',
     'recommonmark',
 ]

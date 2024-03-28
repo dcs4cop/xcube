@@ -8,6 +8,7 @@ sphinx
 sphinx_rtd_theme
 sphinx-argparse
 sphinx-autodoc-annotation
+sphinx-markdown-tables
 recommonmark
 
 mock
