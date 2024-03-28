@@ -53,14 +53,14 @@ class ReferenceDataStore(DataStore):
             from the first URL in the references that has a protocol.
         remote_options: Extra filesystem options for loading the
             referenced data.
-        max_gap: See ``max_block``.
+        max_gap: See `max_block`.
         max_block: For merging multiple concurrent requests to the same
             remote file. Neighboring byte ranges will only be merged
             when their inter-range gap is <= `max_gap`. Default is 64KB.
             Set to 0 to only merge when it requires no extra bytes. Pass
             a negative number to disable merging, appropriate for local
             target files. Neighboring byte ranges will only be merged
-            when the size of the aggregated range is <= ``max_block``.
+            when the size of the aggregated range is <= `max_block`.
             Default is 256MB.
         cache_size: Maximum size of LRU cache, where
             cache_size*record_size denotes the total number of
@@ -150,7 +150,6 @@ class ReferenceDataStore(DataStore):
     def _normalize_ref(
         cls, ref: Union[str, Dict[str, Any]]
     ) -> Tuple[str, Dict[str, Any]]:
-
         if isinstance(ref, str):
             ref_path = ref
             data_id = cls._ref_path_to_data_id(ref_path)

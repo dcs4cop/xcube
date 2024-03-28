@@ -53,28 +53,37 @@ def compute_cube(
     vectorize: bool = None,
     cube_asserted: bool = False,
 ) -> xr.Dataset:
-    """
-    Compute a new output data cube with a single variable named *output_var_name*
-    from variables named *input_var_names* contained in zero, one, or more
-    input data cubes in *input_cubes* using a cube factory function *cube_func*.
+    """Compute a new output data cube with a single variable
+    named *output_var_name* from variables named *input_var_names*
+    contained in zero, one, or more input data cubes in *input_cubes*
+    using a cube factory function *cube_func*.
 
     For a more detailed description of the function usage,
-    please refer to :func:compute_dataset.
+    please refer to `compute_dataset()`.
 
-    :param cube_func: The cube factory function.
-    :param input_cubes: An optional sequence of input cube datasets, must be provided if *input_cube_schema* is not.
-    :param input_cube_schema: An optional input cube schema,
-    must be provided if *input_cubes* is not.
-    Will be ignored if *input_cubes* is provided.
-    :param input_var_names: A sequence of variable names
-    :param input_params: Optional dictionary with processing parameters passed to *cube_func*.
-    :param output_var_name: Optional name of the output variable, defaults to ``'output'``.
-    :param output_var_dtype: Optional numpy datatype of the output variable, defaults to ``'float32'``.
-    :param output_var_attrs: Optional metadata attributes for the output variable.
-    :param vectorize: Whether all *input_cubes* have the same variables which are concatenated and passed as vectors
-        to *cube_func*. Not implemented yet.
-    :param cube_asserted: If False, *cube* will be verified, otherwise it is expected to be a valid cube.
-    :return: A new dataset that contains the computed output variable.
+    Args:
+        cube_func: The cube factory function.
+        input_cubes: An optional sequence of input cube datasets,
+            must be provided if *input_cube_schema* is not.
+        input_cube_schema: An optional input cube schema,
+            must be provided if *input_cubes* is not.
+            Will be ignored if *input_cubes* is provided.
+        input_var_names: A sequence of variable names
+        input_params: Optional dictionary with processing parameters
+            passed to *cube_func*.
+        output_var_name: Optional name of the output variable,
+            defaults to `'output'`.
+        output_var_dtype: Optional numpy datatype of the output variable,
+            defaults to `'float32'`.
+        output_var_attrs: Optional metadata attributes for
+            the output variable.
+        vectorize: Whether all *input_cubes* have the same variables
+            which are concatenated and passed as vectors
+            to *cube_func*. Not implemented yet.
+        cube_asserted: If False, *cube* will be verified, otherwise
+            it is expected to be a valid cube.
+    Returns:
+         A new dataset that contains the computed output variable.
     """
     return compute_dataset(
         cube_func,
@@ -108,29 +117,32 @@ def compute_dataset(
     input data cubes in *input_cubes* using a cube factory function *cube_func*.
 
     *cube_func* is called concurrently for each of the chunks of the input variables.
-    It is expected to return a chunk block whith is type ``np.ndarray``.
+    It is expected to return a chunk block whith is type `np.ndarray`.
 
     If *input_cubes* is not empty, *cube_func* receives variables as specified by *input_var_names*.
     If *input_cubes* is empty, *input_var_names* must be empty too, and *input_cube_schema*
     must be given, so that a new cube can be created.
 
-    The full signature of *cube_func* is:::
+    The full signature of *cube_func* is:
+
+    ```python
 
         def cube_func(*input_vars: np.ndarray,
                       input_params: Dict[str, Any] = None,
                       dim_coords: Dict[str, np.ndarray] = None,
                       dim_ranges: Dict[str, Tuple[int, int]] = None) -> np.ndarray:
             pass
+    ```
 
     The arguments are:
 
-    * ``input_vars``: the variables according to the given *input_var_names*;
-    * ``input_params``: is this call's *input_params*, a mapping from parameter name to value;
-    * ``dim_coords``: a mapping from dimension names to the current chunk's coordinate arrays;
-    * ``dim_ranges``: a mapping from dimension names to the current chunk's index ranges.
+    * `input_vars`: the variables according to the given *input_var_names*;
+    * `input_params`: is this call's *input_params*, a mapping from parameter name to value;
+    * `dim_coords`: a mapping from dimension names to the current chunk's coordinate arrays;
+    * `dim_ranges`: a mapping from dimension names to the current chunk's index ranges.
 
-    Only the ``input_vars`` argument is mandatory. The keyword arguments
-    ``input_params``, ``input_params``, ``input_params`` do need to be present at all.
+    Only the `input_vars` argument is mandatory. The keyword arguments
+    `input_params`, `input_params`, `input_params` do need to be present at all.
 
     *output_var_dims* my be given in the case, where ...
     TODO: describe new output_var_dims...
@@ -145,11 +157,11 @@ def compute_dataset(
         input_params: Optional dictionary with processing parameters
             passed to *cube_func*.
         output_var_name: Optional name of the output variable, defaults
-            to ``'output'``.
+            to `'output'`.
         output_var_dims: Optional set of names of the output dimensions,
             used in the case *cube_func* reduces dimensions.
         output_var_dtype: Optional numpy datatype of the output
-            variable, defaults to ``'float32'``.
+            variable, defaults to `'float32'`.
         output_var_attrs: Optional metadata attributes for the output
             variable.
         vectorize: Whether all *input_cubes* have the same variables
@@ -305,9 +317,15 @@ def compute_dataset(
 
 
 def _inspect_cube_func(cube_func: CubeFunc, input_var_names: Sequence[str] = None):
-    args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = (
-        inspect.getfullargspec(cube_func)
-    )
+    (
+        args,
+        varargs,
+        varkw,
+        defaults,
+        kwonlyargs,
+        kwonlydefaults,
+        annotations,
+    ) = inspect.getfullargspec(cube_func)
     cube_func_name = "?"
     if hasattr(cube_func, "__name__"):
         cube_func_name = cube_func.__name__

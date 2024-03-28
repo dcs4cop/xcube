@@ -42,13 +42,13 @@ OnClose = Callable[[Dict[str, Any]], None]
 
 
 class GenericArray(Dict[str, any]):
-    """Represent a generic array in the ``GenericZarrStore`` as
+    """Represent a generic array in the `GenericZarrStore` as
     dictionary of properties.
 
     Although all properties of this class are optional,
-    some of them are mandatory when added to the ``GenericZarrStore``.
+    some of them are mandatory when added to the `GenericZarrStore`.
 
-    When added to the store using ``GenericZarrStore.add_array()``,
+    When added to the store using `GenericZarrStore.add_array()`,
     the array *name* and *dims* must always be present.
     Other mandatory properties depend on
     the *data* and *get_data* properties, which are mutually exclusive:
@@ -69,18 +69,18 @@ class GenericArray(Dict[str, any]):
 
     * The keyword argument *chunk_info*, if given, provides a dictionary
       that holds information about the current chunk:
-      - ``index: tuple[int, ...]`` - the chunk's index
-      - ``shape: tuple[int, ...]`` - the chunk's shape
-      - ``slices: tuple[slice, ...]`` - the chunk's array slices
+      - `index: tuple[int, ...]` - the chunk's index
+      - `shape: tuple[int, ...]` - the chunk's shape
+      - `slices: tuple[slice, ...]` - the chunk's array slices
 
     * The keyword argument *array_info*, if given, provides a dictionary
       that holds information about the overall array. It contains
-      all array properties passed to the constructor of ``GenericArray``
+      all array properties passed to the constructor of `GenericArray`
       plus
-      - ``ndim: int`` - number of dimensions
-      - ``num_chunks: tuple[int, ...]`` - number of chunks in every dimension
+      - `ndim: int` - number of dimensions
+      - `num_chunks: tuple[int, ...]` - number of chunks in every dimension
 
-    ``GenericZarrStore`` will convert a Numpy array returned
+    `GenericZarrStore` will convert a Numpy array returned
     by *get_data* or given by *data* into a bytes object.
     It will also be compressed, if a *compressor* is given.
     It is important that the array chunks always See also
@@ -100,7 +100,7 @@ class GenericArray(Dict[str, any]):
         get_data_params: Optional keyword-arguments passed to
             *get_data*.
         dtype: Optional array data type. Either a string using syntax of
-            the Zarr spec or a ``numpy.dtype``. For string encoded data
+            the Zarr spec or a `numpy.dtype`. For string encoded data
             types, see
             https://zarr.readthedocs.io/en/stable/spec/v2.html#data-
             type-encoding
@@ -111,7 +111,7 @@ class GenericArray(Dict[str, any]):
             https://zarr.readthedocs.io/en/stable/spec/v2.html#fill-
             value-encoding
         compressor: Optional compressor. If given, it must be an
-            instance of ``numcodecs.abc.Codec``.
+            instance of `numcodecs.abc.Codec`.
         filters: Optional sequence of filters, see
             https://zarr.readthedocs.io/en/stable/spec/v2.html#filters.
         order: Optional array endian ordering. If given, must be "C" or
@@ -341,19 +341,20 @@ class GenericZarrStore(zarr.storage.Store):
     It is designed to serve as a Zarr store for xarray datasets
     that compute their data arrays dynamically.
 
-    See class ``GenericArray`` for specifying the arrays' properties.
+    See class `GenericArray` for specifying the arrays' properties.
 
     The array data of this store's arrays are either retrieved from
     static (numpy) arrays or from a callable that provides the
     array's data chunks as bytes or numpy arrays.
 
-    :param arrays: Arrays to be added.
-        Typically, these will be instances of ``GenericArray``.
-    :param attrs: Optional attributes of the top-level group.
-        If given, it must be JSON serializable.
-    :param array_defaults: Optional array defaults for
-        array properties not passed to ``add_array``.
-        Typically, this will be an instance of ``GenericArray``.
+    Args:
+        arrays: Arrays to be added.
+            Typically, these will be instances of `GenericArray`.
+        attrs: Optional attributes of the top-level group.
+            If given, it must be JSON serializable.
+        array_defaults: Optional array defaults for
+            array properties not passed to `add_array`.
+            Typically, this will be an instance of `GenericArray`.
     """
 
     # Shortcut for GenericArray
@@ -378,10 +379,10 @@ class GenericZarrStore(zarr.storage.Store):
         """
         Add a new array to this store.
 
-        :param array: Optional array properties.
-            Typically, this will be an instance of ``GenericArray``.
-        :param array_kwargs: Keyword arguments form
-            for the properties of ``GenericArray``.
+        array: Optional array properties.
+            Typically, this will be an instance of `GenericArray`.
+        array_kwargs: Keyword arguments form
+            for the properties of `GenericArray`.
         """
         effective_array = GenericArray(self._array_defaults or {})
         if array:
@@ -422,8 +423,12 @@ class GenericZarrStore(zarr.storage.Store):
 
     def listdir(self, path: str = "") -> List[str]:
         """List a store path.
-        :param path: The path.
-        :return: List of sorted directory entries.
+
+        Args:
+            path: The path.
+
+        Returns:
+            List of sorted directory entries.
         """
         if path == "":
             return sorted([".zmetadata", ".zgroup", ".zattrs", *self._arrays.keys()])
@@ -434,7 +439,7 @@ class GenericZarrStore(zarr.storage.Store):
     def rmdir(self, path: str = "") -> None:
         """The general form removes store paths.
         This implementation can remove entire arrays only.
-        :param path: The array's name.
+        path: The array's name.
         """
         if path not in self._arrays:
             raise ValueError(f"{path}: can only remove existing arrays")
@@ -453,8 +458,8 @@ class GenericZarrStore(zarr.storage.Store):
         """The general form renames store paths.
         This implementation can rename arrays only.
 
-        :param src_path: Source array name.
-        :param dst_path: Target array name.
+        src_path: Source array name.
+        dst_path: Target array name.
         """
         array = self._arrays.get(src_path)
         if array is None:
@@ -543,15 +548,18 @@ class GenericZarrStore(zarr.storage.Store):
         The following *array_defaults* properties can be provided
         (other properties are prescribed by the *dataset*):
 
-        * ``fill_value``- defaults to None
-        * ``compressor``- defaults to None
-        * ``filters``- defaults to None
-        * ``order``- defaults to "C"
-        * ``chunk_encoding`` - defaults to "bytes"
+        * `fill_value`- defaults to None
+        * `compressor`- defaults to None
+        * `filters`- defaults to None
+        * `order`- defaults to "C"
+        * `chunk_encoding` - defaults to "bytes"
 
-        :param dataset: The dataset
-        :param array_defaults: Array default values.
-        :return: A new Zarr store instance.
+        Args:
+            dataset: The dataset
+            array_defaults: Array default values.
+
+        Returns:
+            A new Zarr store instance.
         """
 
         def _get_dataset_data(ds=None, chunk_info=None, array_info=None) -> np.ndarray:

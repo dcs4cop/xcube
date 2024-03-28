@@ -46,7 +46,7 @@ class CubeTransformer(ABC):
 
         The latter is achieved by returning a derived *cube_config* where
         all properties that have been "consumed" by this transformer
-        are removed. See :meth:`CubeConfig.drop_property`.
+        are removed. See `CubeConfig.drop_property`.
         """
 
 

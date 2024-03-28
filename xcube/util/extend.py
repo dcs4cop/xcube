@@ -56,8 +56,7 @@ def extend(
     ext_args: Optional[Sequence[Any]] = None,
     ext_kwargs: Optional[Mapping[str, Any]] = None,
 ) -> Callable[[ExtClass], ExtClass]:
-    """
-    A class decorator factory that adds an instance property named
+    """A class decorator factory that adds an instance property named
     *property_name* to an existing class *base_class*. The value of the
     new property is an instance of the decorated class.
 
@@ -77,25 +76,27 @@ def extend(
     and may be passed to this decorator using the *ext_args*
     and *ext_kwargs* keyword arguments.
 
-    :param base_class: The base class to be extended.
-    :param name: The new property's name.
-    :param doc: The new property's docstring, optional.
-        If omitted, the docstring of the decorated class, if any, is used.
-    :param class_handler: Optional class handler.
-        If given, it must be a callable that is called
-        with a tuple comprising extension name and class.
-        If this is a string, it is the name of a static or class method
-        of the *base_class* which is called with that tuple.
-    :param inst_handler: Optional instance handler.
-        If given, it must be a callable that is called
-        with a tuple comprising extension name and instance.
-        If this is a string, it is the name of an instance method
-        of the *base_class* which is called with that tuple.
-    :param ext_args: positional arguments passed
-        to the decorated class' constructor
-    :param ext_kwargs: keyword arguments passed
-        to the decorated class' constructor
-    :return: a class decorator function
+    Args:
+        base_class: The base class to be extended.
+        name: The new property's name.
+        doc: The new property's docstring, optional.
+            If omitted, the docstring of the decorated class, if any, is used.
+        class_handler: Optional class handler.
+            If given, it must be a callable that is called
+            with a tuple comprising extension name and class.
+            If this is a string, it is the name of a static or class method
+            of the *base_class* which is called with that tuple.
+        inst_handler: Optional instance handler.
+            If given, it must be a callable that is called
+            with a tuple comprising extension name and instance.
+            If this is a string, it is the name of an instance method
+            of the *base_class* which is called with that tuple.
+        ext_args: positional arguments passed
+            to the decorated class' constructor
+        ext_kwargs: keyword arguments passed
+            to the decorated class' constructor
+    Returns:
+        a class decorator function
     """
     assert_true(
         inspect.isclass(base_class),

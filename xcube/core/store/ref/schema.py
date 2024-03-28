@@ -86,7 +86,7 @@ REF_STORE_SCHEMA = JsonObjectSchema(
                 " requires no extra bytes. Pass a negative number to"
                 " disable merging, appropriate for local target files."
                 " Neighboring byte ranges will only be merged when the"
-                " size of the aggregated range is <= ``max_block``."
+                " size of the aggregated range is <= `max_block`."
                 " Default is 256MB."
             )
         ),

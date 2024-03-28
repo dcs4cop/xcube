@@ -42,7 +42,7 @@ class DatasetIsNotACubeError(BaseException):
     """Raised, if at least a subset of a dataset's variables
     have data cube dimensions ('time' , [...], y_dim_name, x_dim_name),
     where y_dim_name and x_dim_name are determined by a dataset's
-    :class:GridMapping.
+    `GridMapping`.
     """
 
     pass
@@ -113,10 +113,12 @@ def encode_cube(
     """Encode a *cube* with its *grid_mapping*, and additional variables in
     *non_cube_subset* into a new dataset.
 
-    This is the inverse of the operation :func:decode_cube:
+    This is the inverse of the operation `decode_cube()`:
 
+    ```python
         cube, gm, non_cube = decode_cube(dataset)
         dataset = encode_cube(cube, gm, non_cube)
+    ```
 
     The returned data cube comprises all variables in *cube*,
     whose dimensions should be ("time" , [...], y_dim_name, x_dim_name),
@@ -135,7 +137,7 @@ def encode_cube(
             variables.
 
     Returns:
-
+        A Dataset instance
     """
     if non_cube_subset is not None:
         dataset = cube.assign(**non_cube_subset.data_vars)
@@ -167,15 +169,17 @@ def decode_cube(
     """Decode a *dataset* into a cube variable subset, a grid mapping, and
     the non-cube variables of *dataset*.
 
-    This is the inverse of the operation :func:encode_cube:
+    This is the inverse of the operation `encode_cube()`:
 
+    ```python
         cube, gm, non_cube = decode_cube(dataset)
         dataset = encode_cube(cube, gm, non_cube)
+    ```
 
     The returned data cube comprises all variables in *dataset*
     whose dimensions are ("time" , [...], y_dim_name, x_dim_name).
     Here y_dim_name and x_dim_name are determined by the
-    :class:GridMapping derived from *dataset*.
+    `GridMapping` derived from *dataset*.
 
     Args:
         dataset: The dataset.
@@ -185,10 +189,10 @@ def decode_cube(
         force_copy: whether to create a copy of this dataset even if
             this dataset is identical to its cube subset.
         force_non_empty: whether the resulting cube must have at least
-            one data variable. If True, a :class:DatasetIsNotACubeError
+            one data variable. If True, a `DatasetIsNotACubeError`
             may be raised.
         force_geographic: whether a geographic grid mapping is required.
-            If True, a :class:DatasetIsNotACubeError may be raised.
+            If True, a `DatasetIsNotACubeError` may be raised.
 
     Returns:
         A 3-tuple comprising the data cube subset of *dataset* the
@@ -405,7 +409,7 @@ def _normalize_lat_lon_2d(ds: xr.Dataset) -> xr.Dataset:
 
 
 def _normalize_lon_360(ds: xr.Dataset) -> xr.Dataset:
-    """Fix the longitude of the given dataset ``ds`` so that it ranges from -180 to +180 degrees.
+    """Fix the longitude of the given dataset `ds` so that it ranges from -180 to +180 degrees.
 
     Args:
         ds: The dataset whose longitudes may be given in the range 0 to
@@ -570,17 +574,17 @@ def normalize_coord_vars(ds: xr.Dataset) -> xr.Dataset:
 
 def normalize_missing_time(ds: xr.Dataset) -> xr.Dataset:
     """Add a time coordinate variable and their associated bounds coordinate variables
-    if either temporal CF attributes ``time_coverage_start`` and ``time_coverage_end``
+    if either temporal CF attributes `time_coverage_start` and `time_coverage_end`
     are given or time information can be extracted from the file name but the time dimension is
     missing.
 
     In case the time information is given by a variable called 't' instead of 'time', it will be
     renamed into 'time'.
 
-    The new time coordinate variable will be named ``time`` with dimension ['time'] and shape [1].
-    The time bounds coordinates variable will be named ``time_bnds``
+    The new time coordinate variable will be named `time` with dimension ['time'] and shape [1].
+    The time bounds coordinates variable will be named `time_bnds`
     with dimensions ['time', 'bnds'] and shape [1,2].
-    Both are of data type ``datetime64``.
+    Both are of data type `datetime64`.
 
     Args:
         ds: Dataset to adjust
@@ -736,7 +740,6 @@ def adjust_spatial_attrs(ds: xr.Dataset, allow_point: bool = False) -> xr.Datase
         and lon_max is not None
         and lat_max is not None
     ):
-
         if not copied:
             ds = ds.copy()
 

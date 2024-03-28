@@ -28,7 +28,7 @@ from xcube.core.verify import verify_cube
 class DatasetAccessor:
     """The xcube xarray API.
 
-    The API is made available via the ``xcube`` attribute of
+    The API is made available via the `xcube` attribute of
     xarray.Dataset instances.
 
     It defines new xcube-specific properties for xarray datasets:
@@ -40,7 +40,7 @@ class DatasetAccessor:
         minus the data variables from :attr:cube.
         May be the same as this dataset.
     * :attr:gm The grid mapping used by this dataset.
-        It is an instance of :class:GridMapping.
+        It is an instance of `GridMapping`.
         May be None, if this dataset does not define a grid mapping.
     """
 
@@ -101,18 +101,18 @@ class DatasetAccessor:
     def new(cls, **kwargs) -> xr.Dataset:
         """Create a new empty cube. Useful for testing.
 
-        Refer to :func:`xcube.core.new.new_cube` for details.
+        Refer to `xcube.core.new.new_cube()` for details.
         """
         return new_cube(**kwargs)
 
     @classmethod
     def open(cls, input_path: str, format_name: str = None, **kwargs) -> xr.Dataset:
-        """The ``read`` method as context manager that auto-closes the data cube read.
+        """The `read` method as context manager that auto-closes the data cube read.
 
         Args:
             input_path: input path
             format_name: format, e.g. "zarr" or "netcdf4"
-            **kwargs: format-specific keyword arguments
+            kwargs: format-specific keyword arguments
 
         Returns:
             dataset object

@@ -44,15 +44,17 @@ def update_dataset_attrs(
     update_existing: bool = False,
     in_place: bool = False,
 ) -> xr.Dataset:
-    """
-    Update spatio-temporal CF/THREDDS attributes given *dataset* according
-    to spatio-temporal coordinate variables time, lat, and lon.
+    """Update spatio-temporal CF/THREDDS attributes
+    given *dataset* according to spatio-temporal coordinate
+    variables time, lat, and lon.
 
-    :param dataset: The dataset.
-    :param global_attrs: Optional global attributes.
-    :param update_existing: If ``True``, any existing attributes will be updated.
-    :param in_place: If ``True``, *dataset* will be modified in place and returned.
-    :return: A new dataset, if *in_place* if ``False`` (default), else the passed and modified *dataset*.
+    Args:
+        dataset: The dataset.
+        global_attrs: Optional global attributes.
+        update_existing: If `True`, any existing attributes will be updated.
+        in_place: If `True`, *dataset* will be modified in place and returned.
+    Returns:
+         A new dataset, if *in_place* if `False` (default), else the passed and modified *dataset*.
     """
     if not in_place:
         dataset = dataset.copy()
@@ -76,13 +78,13 @@ def update_dataset_spatial_attrs(
 
     Args:
         dataset: The dataset.
-        update_existing: If ``True``, any existing attributes will be
+        update_existing: If `True`, any existing attributes will be
             updated.
-        in_place: If ``True``, *dataset* will be modified in place and
+        in_place: If `True`, *dataset* will be modified in place and
             returned.
 
     Returns:
-        A new dataset, if *in_place* if ``False`` (default), else the
+        A new dataset, if *in_place* if `False` (default), else the
         passed and modified *dataset*.
     """
     if not in_place:
@@ -108,13 +110,13 @@ def update_dataset_temporal_attrs(
 
     Args:
         dataset: The dataset.
-        update_existing: If ``True``, any existing attributes will be
+        update_existing: If `True`, any existing attributes will be
             updated.
-        in_place: If ``True``, *dataset* will be modified in place and
+        in_place: If `True`, *dataset* will be modified in place and
             returned.
 
     Returns:
-        A new dataset, if *in_place* is ``False`` (default), else the
+        A new dataset, if *in_place* is `False` (default), else the
         passed and modified *dataset*.
     """
     coord_data = [_TIME_ATTRS_DATA]
@@ -243,7 +245,7 @@ def update_dataset_chunk_encoding(
         chunk_sizes: the chunk sizes to be used for the encoding. If
             None, any chunking encoding is removed.
         format_name: format name, e.g. "zarr" or "netcdf4".
-        in_place: If ``True``, *dataset* will be modified in place and
+        in_place: If `True`, *dataset* will be modified in place and
             returned.
     """
     if format_name == FORMAT_NAME_ZARR:

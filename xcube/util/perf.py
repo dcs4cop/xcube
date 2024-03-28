@@ -32,17 +32,21 @@ from xcube.constants import LOG
 def measure_time_cm(logger=None, disabled=False):
     """Get a context manager for measuring execution time of code blocks and logging the result.
 
-    Measure duration and log output:::
+    Measure duration and log output:
 
+    ```python
         measure_time = measure_time_cm()
         with measure_time("heavy computation"):
             do_heavy_computation()
+    ```
 
-    or just measure duration:::
+    or just measure duration:
 
+    ```python
         with measure_time() as cm:
             do_heavy_computation()
         print("heavy computation took %2.f seconds" % cm.duration)
+    ```
 
     Args:
         logger: The logger to be used. May be a string or logger object.

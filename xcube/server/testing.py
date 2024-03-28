@@ -47,7 +47,6 @@ def find_free_port():
 
 
 class ServerTestCase(unittest.TestCase, ABC):
-
     def setUp(self) -> None:
         self.port = find_free_port()
         config = self.get_config()
@@ -141,7 +140,7 @@ class ServerTestCase(unittest.TestCase, ABC):
         """Assert that response has status code 200.
 
         Args:
-            response: The response from a ``self.fetch()`` call
+            response: The response from a `self.fetch()` call
         """
         self.assertResponse(response, expected_status=200)
 
@@ -153,7 +152,7 @@ class ServerTestCase(unittest.TestCase, ABC):
         has the given error message *expected_message*, if given.
 
         Args:
-            response: The response from a ``self.fetch()`` call
+            response: The response from a `self.fetch()` call
             expected_message: The expected error message or part of it.
         """
         self.assertResponse(
@@ -168,7 +167,7 @@ class ServerTestCase(unittest.TestCase, ABC):
         has the given error message *expected_message*, if given.
 
         Args:
-            response: The response from a ``self.fetch()`` call
+            response: The response from a `self.fetch()` call
             expected_message: The expected error message or part of it.
         """
         self.assertResponse(
@@ -186,7 +185,7 @@ class ServerTestCase(unittest.TestCase, ABC):
         has the given error message *expected_message*, if given.
 
         Args:
-            response: The response from a ``self.fetch()`` call
+            response: The response from a `self.fetch()` call
             expected_status: The expected status code.
             expected_message: The expected error message or part of it.
         """

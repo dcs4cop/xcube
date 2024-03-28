@@ -58,27 +58,29 @@ def compute_levels(
     in both spatial dimensions.
 
     It is assumed that the spatial dimensions of each variable are
-    the inner-most, that is, the last two elements of a variable's
+    the innermost, that is, the last two elements of a variable's
     shape provide the spatial dimension sizes.
 
-    :param dataset: The input dataset to be turned into
-        a multi-level pyramid.
-    :param spatial_dims: If given, only variables are considered
-        whose last to dimension elements match the given *spatial_dims*.
-    :param spatial_shape: If given, only variables are
-        considered whose last to shape elements match the
-        given *spatial_shape*.
-    :param spatial_tile_shape: If given, chunking will match the
-        provided *spatial_tile_shape*.
-    :param var_names: Variables to consider. If None, all variables
-        with at least two dimensions are considered.
-    :param num_levels_max: If given, the maximum number
-        of pyramid levels.
-    :param post_process_level: If given, the function will be
-        called for each level and must return a dataset.
-    :param progress_monitor: If given, the function will be
-        called for each level.
-    :return: A list of dataset instances representing
+    Args:
+        dataset: The input dataset to be turned into
+            a multi-level pyramid.
+        spatial_dims: If given, only variables are considered
+            whose last to dimension elements match the given *spatial_dims*.
+        spatial_shape: If given, only variables are
+            considered whose last to shape elements match the
+            given *spatial_shape*.
+        spatial_tile_shape: If given, chunking will match the
+            provided *spatial_tile_shape*.
+        var_names: Variables to consider. If None, all variables
+            with at least two dimensions are considered.
+        num_levels_max: If given, the maximum number
+            of pyramid levels.
+        post_process_level: If given, the function will be
+            called for each level and must return a dataset.
+        progress_monitor: If given, the function will be
+            called for each level.
+    Returns:
+        A list of dataset instances representing
         the multi-level pyramid.
     """
     dropped_vars, spatial_shape, spatial_tile_shape = _filter_level_source_dataset(
@@ -170,7 +172,7 @@ def write_levels(
         link_input: Just link the dataset at level zero instead of
             writing it.
         progress_monitor: An optional progress monitor.
-        **kwargs: Keyword-arguments accepted by the ``compute_levels()``
+        **kwargs: Keyword-arguments accepted by the `compute_levels()`
             function.
 
     Returns:
@@ -347,7 +349,6 @@ def _filter_level_source_dataset(
     # Collect data variables to be dropped,
     # derive missing information from spatial data variables
     for var_name in var_names:
-
         if var_name not in dataset.data_vars:
             raise ValueError(f"variable {var_name} not found")
 

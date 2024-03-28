@@ -140,8 +140,8 @@ class Viewer:
 
         Args:
             dataset: The dataset to me added. Must be an instance of
-                ``xarray.Dataset`` or
-                ``xcube.core.mldataset.MultiLevelDataset``.
+                `xarray.Dataset` or
+                `xcube.core.mldataset.MultiLevelDataset`.
             ds_id: Optional dataset identifier. If not given, an
                 identifier will be generated and returned.
             title: Optional dataset title. Overrides a title given by

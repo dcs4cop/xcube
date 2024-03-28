@@ -48,19 +48,21 @@ def subsample_dataset(
     Only data variables with spatial dimensions given by
     *xy_dim_names* are subsampled.
 
-    :param dataset: the dataset providing the variables
-    :param step: the integer subsampling step size in pixels in
-        the x and y directions.
-        For aggregation methods other than "first" it defines the
-        window size for the aggregation.
-    :param xy_dim_names: the spatial dimension names
-    :param agg_methods: Optional aggregation methods.
-        May be given as string or as mapping from variable name pattern
-        to aggregation method. Valid aggregation methods are
-        "auto", "first", "min", "max", "mean", "median".
-        If "auto", the default, "first" is used for integer variables
-        and "mean" for floating point variables.
-    :return: The subsampled dataset or a tuple comprising the
+    Args:
+        dataset: the dataset providing the variables
+        step: the integer subsampling step size in pixels in
+            the x and y directions.
+            For aggregation methods other than "first" it defines the
+            window size for the aggregation.
+        xy_dim_names: the spatial dimension names
+        agg_methods: Optional aggregation methods.
+            May be given as string or as mapping from variable name pattern
+            to aggregation method. Valid aggregation methods are
+            "auto", "first", "min", "max", "mean", "median".
+            If "auto", the default, "first" is used for integer variables
+            and "mean" for floating point variables.
+    Returns:
+        The subsampled dataset or a tuple comprising the
         subsampled dataset and the effective aggregation methods.
     """
     assert_instance(dataset, xr.Dataset, name="dataset")
@@ -196,9 +198,9 @@ def get_variable_subsampling_slices(
     Return None, if *variable* does not contain spatial
     dimensions.
 
-    :param variable: the dataset providing the variables
-    :param step: the integer subsampling step
-    :param xy_dim_names: the spatial dimension names
+    variable: the dataset providing the variables
+    step: the integer subsampling step
+    xy_dim_names: the spatial dimension names
     """
     assert_instance(variable, xr.DataArray, name="variable")
     assert_instance(step, int, name="step")

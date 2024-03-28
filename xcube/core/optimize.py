@@ -47,7 +47,7 @@ def optimize_dataset(
     The primary usage of this function is to optimize data cubes for cloud object storage.
     The function currently works only for data cubes using Zarr format.
     *unchunk_coords* can be a name, or list of names of the coordinate variable(s) to be consolidated.
-    If boolean ``True`` is used, coordinate all variables will be consolidated.
+    If boolean `True` is used, coordinate all variables will be consolidated.
 
     Args:
         input_path: Path to input dataset with ZARR format.
@@ -58,7 +58,7 @@ def optimize_dataset(
             copy is made and *output_path* must be given.
         unchunk_coords: The name of a coordinate variable or a list of
             coordinate variables whose chunks should be consolidated.
-            Pass ``True`` to consolidate chunks of all coordinate
+            Pass `True` to consolidate chunks of all coordinate
             variables.
         exception_type: Type of exception to be used on value errors.
     """

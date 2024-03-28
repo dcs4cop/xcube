@@ -44,7 +44,6 @@ _NUMERIC_TYPES_ENUM = {"integer", "number"}
 
 
 class JsonSchema(ABC):
-
     # noinspection PyShadowingBuiltins
     def __init__(
         self,
@@ -413,7 +412,6 @@ class JsonIntegerSchema(JsonNumberSchema):
 
 
 class JsonArraySchema(JsonSchema):
-
     def __init__(
         self,
         items: Union[JsonSchema, Sequence[JsonSchema]] = None,
@@ -477,7 +475,6 @@ class JsonArraySchema(JsonSchema):
 
 
 class JsonObjectSchema(JsonSchema):
-
     # TODO: also address property dependencies
 
     def __init__(
@@ -538,7 +535,8 @@ class JsonObjectSchema(JsonSchema):
 
         The original *kwargs* is not touched.
 
-        :return a tuple of two new keyword-argument dictionaries
+        Returns:
+            a tuple of two new keyword-argument dictionaries
         """
         old_kwargs = dict(kwargs)
         new_kwargs = {}
@@ -675,12 +673,12 @@ class JsonObject(ABC):
     """The abstract base class for objects
 
     * whose instances can be created from a JSON-serializable
-      dictionary using their :meth:from_dict class method;
+      dictionary using their `from_dict()` class method;
     * whose instances can be converted into a JSON-serializable dictionary
-      using their :meth:to_dict instance method.
+      using their `to_dict()` instance method.
 
-    Derived concrete classes must only implement the :meth:get_schema class method
-    that must return a :class:JsonObjectSchema.
+    Derived concrete classes must only implement the `get_schema()` class method
+    that must return a `JsonObjectSchema`.
 
     Instances of this class have a JSON representation in Jupyter/IPython Notebooks.
     """

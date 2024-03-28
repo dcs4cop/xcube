@@ -144,7 +144,7 @@ class InputProcessor(ExtensionComponent, metaclass=ABCMeta):
 
     An InputProcessor can be configured by the following parameters:
 
-    * ``input_reader``: The input format identifier. Required, no default.
+    * `input_reader`: The input format identifier. Required, no default.
 
     Args:
         name: A unique input processor identifier.
@@ -199,7 +199,7 @@ class InputProcessor(ExtensionComponent, metaclass=ABCMeta):
         steps and should therefore not be dropped.
         However, the processing or post-processing steps may later remove them.
 
-        Returns ``None`` by default.
+        Returns `None` by default.
 
         Args:
             dataset: The dataset.
@@ -281,18 +281,18 @@ class XYInputProcessor(InputProcessor, metaclass=ABCMeta):
 
     An XYInputProcessor can be configured by the following parameters:
 
-    * ``input_reader``: The input format identifier.
+    * `input_reader`: The input format identifier.
         Required, no default.
-    * ``xy_names``: A tuple of names of the variable providing x,y geo-locations.
-        Optional, looked up automatically if not given e.g. ``("lon", "lat")``.
-    * ``xy_tp_names``: A tuple of names of the variable providing x,y tie-point geo-locations.
+    * `xy_names`: A tuple of names of the variable providing x,y geo-locations.
+        Optional, looked up automatically if not given e.g. `("lon", "lat")`.
+    * `xy_tp_names`: A tuple of names of the variable providing x,y tie-point geo-locations.
         Optional, no default.
-    * ``xy_crs``: A WKT string that identifies the x,y coordinate reference system (CRS).
+    * `xy_crs`: A WKT string that identifies the x,y coordinate reference system (CRS).
         Optional, no default.
-    * ``xy_gcp_step``: An integer or tuple of integers that is used to sub-sample x,y coordinate variables
+    * `xy_gcp_step`: An integer or tuple of integers that is used to sub-sample x,y coordinate variables
         for extracting ground control points (GCP).
         Optional, no default.
-    * ``xy_tp_gcp_step``: An integer or tuple of integers that is used to sub-sample x,y tie-point coordinate variables
+    * `xy_tp_gcp_step`: An integer or tuple of integers that is used to sub-sample x,y tie-point coordinate variables
         for extracting ground control points (GCP).
         Optional, no default.
     """
@@ -408,29 +408,29 @@ class XYInputProcessor(InputProcessor, metaclass=ABCMeta):
 class DefaultInputProcessor(XYInputProcessor):
     """Default input processor that expects input datasets to have the xcube standard format:
 
-    * Have dimensions ``lat``, ``lon``, optionally ``time`` of length 1;
-    * have coordinate variables ``lat[lat]``, ``lon[lat]``, ``time[time]`` (opt.), ``time_bnds[time, 2]`` (opt.);
-    * have coordinate variables ``lat[lat]``, ``lon[lat]`` as decimal degrees on WGS84 ellipsoid,
+    * Have dimensions `lat`, `lon`, optionally `time` of length 1;
+    * have coordinate variables `lat[lat]`, `lon[lat]`, `time[time]` (opt.), `time_bnds[time, 2]` (opt.);
+    * have coordinate variables `lat[lat]`, `lon[lat]` as decimal degrees on WGS84 ellipsoid,
       both linearly increasing with same constant delta;
-    * have coordinate variable ``time[time]`` representing a date+time values with defined CF "units" attribute;
-    * have any data variables of form ``<var>[time, lat, lon]``;
-    * have global attribute pairs (``time_coverage_start``, ``time_coverage_end``), or (``start_time``, ``stop_time``)
-      if ``time`` coordinate is missing.
+    * have coordinate variable `time[time]` representing a date+time values with defined CF "units" attribute;
+    * have any data variables of form `<var>[time, lat, lon]`;
+    * have global attribute pairs (`time_coverage_start`, `time_coverage_end`), or (`start_time`, `stop_time`)
+      if `time` coordinate is missing.
 
     The default input processor can be configured by the following parameters:
 
-    * ``input_reader``: The input format identifier.
-        Required, defaults to ``"netcdf4"``.
-    * ``xy_names``: A tuple of names of the variable providing x,y geo-locations.
-        Optional, defaults to ``("lon", "lat")``.
-    * ``xy_tp_names``: A tuple of names of the variable providing x,y tie-point geo-locations.
+    * `input_reader`: The input format identifier.
+        Required, defaults to `"netcdf4"`.
+    * `xy_names`: A tuple of names of the variable providing x,y geo-locations.
+        Optional, defaults to `("lon", "lat")`.
+    * `xy_tp_names`: A tuple of names of the variable providing x,y tie-point geo-locations.
         Optional, no default.
-    * ``xy_crs``: A WKT string that identifies the x,y coordinate reference system (CRS).
-        Optional, defaults to WKT for EPSG:4326 (see ``xcube.constants.CRS_WKT_EPSG_4326`` constant).
-    * ``xy_gcp_step``: An integer or tuple of integers that is used to sub-sample x,y coordinate variables
+    * `xy_crs`: A WKT string that identifies the x,y coordinate reference system (CRS).
+        Optional, defaults to WKT for EPSG:4326 (see `xcube.constants.CRS_WKT_EPSG_4326` constant).
+    * `xy_gcp_step`: An integer or tuple of integers that is used to sub-sample x,y coordinate variables
         for extracting ground control points (GCP).
         Optional, no default.
-    * ``xy_tp_gcp_step``: An integer or tuple of integers that is used to sub-sample x,y tie-point coordinate variables
+    * `xy_tp_gcp_step`: An integer or tuple of integers that is used to sub-sample x,y tie-point coordinate variables
         for extracting ground control points (GCP).
         Optional, no default.
     """
@@ -524,7 +524,7 @@ class DefaultInputProcessor(XYInputProcessor):
 
 
 def _normalize_lon_360(dataset: xr.Dataset) -> xr.Dataset:
-    """Fix the longitude of the given dataset ``dataset`` so that it ranges from -180 to +180 degrees.
+    """Fix the longitude of the given dataset `dataset` so that it ranges from -180 to +180 degrees.
 
     Args:
         dataset: The dataset whose longitudes may be given in the range

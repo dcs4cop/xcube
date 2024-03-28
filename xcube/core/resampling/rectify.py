@@ -56,14 +56,14 @@ def rectify_dataset(
     for every data variable with the same spatial dimensions.
 
     For example, a dataset may comprise variables with
-    spatial dimensions ``var(..., y_dim, x_dim)``,
+    spatial dimensions `var(..., y_dim, x_dim)`,
     then one the function expects coordinates to be provided
     in two forms:
 
-    1. One-dimensional ``x_var(x_dim)``
-       and ``y_var(y_dim)`` (coordinate) variables.
-    2. Two-dimensional ``x_var(y_dim, x_dim)``
-       and ``y_var(y_dim, x_dim)`` (coordinate) variables.
+    1. One-dimensional `x_var(x_dim)`
+       and `y_var(y_dim)` (coordinate) variables.
+    2. Two-dimensional `x_var(y_dim, x_dim)`
+       and `y_var(y_dim, x_dim)` (coordinate) variables.
 
     If *target_gm* is given and it defines a tile size
     or *tile_size* is given, and the number of tiles is
@@ -83,9 +83,9 @@ def rectify_dataset(
             retain its spatial resolution.
         encode_cf: Whether to encode the target grid mapping into the
             resampled dataset in a CF-compliant way. Defaults to
-            ``True``.
+            `True`.
         gm_name: Name for the grid mapping variable. Defaults to "crs".
-            Used only if *encode_cf* is ``True``.
+            Used only if *encode_cf* is `True`.
         tile_size: Optional tile size for the output.
         is_j_axis_up: Whether y coordinates are increasing with positive
             image j axis.
@@ -94,7 +94,7 @@ def rectify_dataset(
             output.
         compute_subset: Whether to compute a spatial subset from
             *dataset* using *output_geom*. If set, the function may
-            return ``None`` in case there is no overlap.
+            return `None` in case there is no overlap.
         uv_delta: A normalized value that is used to determine whether
             x,y coordinates in the output are contained in the triangles
             defined by the input x,y coordinates. The higher this value,
@@ -201,7 +201,7 @@ def _select_variables(
         var_names: Optional variable name or sequence of variable names.
 
     Returns:
-        The selected variables as a variable name to ``xr.DataArray``
+        The selected variables as a variable name to `xr.DataArray`
         mapping
     """
     spatial_var_names = source_gm.xy_var_names

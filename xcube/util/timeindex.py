@@ -52,7 +52,7 @@ def ensure_time_label_compatible(
     it with a modified value for *labels[time_name]*.
 
     The parameter *time_name* specifies the name of the variable representing
-    time, and defaults to ``'time'``.
+    time, and defaults to `'time'`.
 
     If there is no *time_name* key in the labels dictionary or if there is no
     *time_name* dimension in the var array, the original labels are returned.
@@ -167,12 +167,12 @@ def _ensure_timestamp_compatible(
         # pandas treats all datetime64 arrays as timezone-naive
         array_timezone = None
     else:
-        # Check whether the time dimension has ``tzinfo``.
+        # Check whether the time dimension has `tzinfo`.
         # The expression for first_time_value is non-intuitive, but necessary.
-        # If we use ``first_time_value = var.time[0].values``, the indexing
-        # operation on ``time`` makes xarray cast it to a np.datetime64 (!),
+        # If we use `first_time_value = var.time[0].values`, the indexing
+        # operation on `time` makes xarray cast it to a np.datetime64 (!),
         # so we can't use it to check the attributes of the original type.
-        # If we use ``first_time_value = var.time.values[0]`` we get the
+        # If we use `first_time_value = var.time.values[0]` we get the
         # correct type, but in the case of a Dask array we unnecessarily load
         # the entire array into memory just to get one element. Fortunately,
         # slice indexing doesn't trigger xarray's datetime64 casting behaviour,
@@ -216,7 +216,7 @@ def _ensure_timestamp_compatible(
 
 
 def _has_datetime64_time(var: xr.DataArray, time_name) -> bool:
-    """Report whether *var*'s time dimension has type ``datetime64``
+    """Report whether *var*'s time dimension has type `datetime64`
 
     *time_name* specifies the name of the time dimension.
 

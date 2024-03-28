@@ -211,7 +211,7 @@ def parse_cli_sequence(
         separator: expected separator if *seq_value* is a string,
             default is ','.
         error_type: value error to be raised in case, defaults to
-            ``click.ClickException``
+            `click.ClickException`
 
     Returns:
         parsed and validated *seq_value* as a tuple of values

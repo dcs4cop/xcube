@@ -49,7 +49,7 @@ def affine_transform_dataset(
 
     The affine transformation will be applied only if the CRS of
     *source_gm* and the CRS of *target_gm* are both geographic or equal.
-    Otherwise, a ``ValueError`` will be raised.
+    Otherwise, a `ValueError` will be raised.
 
     Args:
         dataset: The source dataset
@@ -61,9 +61,9 @@ def affine_transform_dataset(
             variables.
         encode_cf: Whether to encode the target grid mapping into the
             resampled dataset in a CF-compliant way. Defaults to
-            ``True``.
+            `True`.
         gm_name: Name for the grid mapping variable. Defaults to "crs".
-            Used only if *encode_cf* is ``True``.
+            Used only if *encode_cf* is `True`.
         reuse_coords: Whether to either reuse target coordinate arrays
             from target_gm or to compute new ones.
 

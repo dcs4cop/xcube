@@ -48,7 +48,7 @@ class Frozen(ABC):
 
 
 class FrozenDict(Dict[K, V], Frozen, Generic[K, V]):
-    """A frozen version of a standard ``dict``."""
+    """A frozen version of a standard `dict`."""
 
     @classmethod
     def freeze(cls, other: Mapping) -> "FrozenDict":
@@ -86,7 +86,7 @@ class FrozenDict(Dict[K, V], Frozen, Generic[K, V]):
 
 
 class FrozenList(List[V], Frozen, Generic[V]):
-    """A frozen version of a standard ``list``."""
+    """A frozen version of a standard `list`."""
 
     @classmethod
     def freeze(cls, other: Sequence[V]) -> "FrozenList":

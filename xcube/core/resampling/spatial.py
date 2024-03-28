@@ -53,11 +53,11 @@ def resample_in_space(
 
     If the source grid mapping *source_gm* is not given,
     it is derived from *dataset*:
-    ``source_gm = GridMapping.from_dataset(dataset)``.
+    `source_gm = GridMapping.from_dataset(dataset)`.
 
     If the target grid mapping *target_gm* is not given,
     it is derived from *source_gm*:
-    ``target_gm = source_gm.to_regular()``.
+    `target_gm = source_gm.to_regular()`.
 
     If *source_gm* is almost equal to *target_gm*, this
     function is a no-op and *dataset* is returned unchanged.
@@ -70,17 +70,17 @@ def resample_in_space(
     must be a mapping from variable names to configuration
     dictionaries which can have the following properties:
 
-    * ``spline_order`` (int) - The order of spline polynomials
+    * `spline_order` (int) - The order of spline polynomials
         used for interpolating. It is used for upsampling only.
         Possible values are 0 to 5.
         Default is 1 (bi-linear) for floating point variables,
         and 0 (= nearest neighbor) for integer and bool variables.
-    * ``aggregator`` (str) - An optional aggregating
+    * `aggregator` (str) - An optional aggregating
         function. It is used for downsampling only.
         Examples are numpy.nanmean, numpy.nanmin, numpy.nanmax.
         Default is numpy.nanmean for floating point variables,
         and None (= nearest neighbor) for integer and bool variables.
-    * ``recover_nan`` (bool) - whether a special algorithm
+    * `recover_nan` (bool) - whether a special algorithm
         shall be used that is able to recover values that would
         otherwise yield NaN during resampling.
         Default is True for floating point variables,
@@ -102,17 +102,19 @@ def resample_in_space(
     In all other cases, no affine transformation is applied and
     the resampling is a direct rectification.
 
-    :param dataset: The source dataset.
-    :param source_gm: The source grid mapping.
-    :param target_gm: The target grid mapping. Must be regular.
-    :param var_configs: Optional resampling configurations
-        for individual variables.
-    :param encode_cf: Whether to encode the target grid mapping
-        into the resampled dataset in a CF-compliant way.
-        Defaults to ``True``.
-    :param gm_name: Name for the grid mapping variable.
-        Defaults to "crs". Used only if *encode_cf* is ``True``.
-    :return: The spatially resampled dataset.
+    Args:
+        dataset: The source dataset.
+        source_gm: The source grid mapping.
+        target_gm: The target grid mapping. Must be regular.
+        var_configs: Optional resampling configurations
+            for individual variables.
+        encode_cf: Whether to encode the target grid mapping
+            into the resampled dataset in a CF-compliant way.
+            Defaults to `True`.
+        gm_name: Name for the grid mapping variable.
+            Defaults to "crs". Used only if *encode_cf* is `True`.
+    Returns:
+         The spatially resampled dataset.
     """
     if source_gm is None:
         # No source grid mapping given, so do derive it from dataset

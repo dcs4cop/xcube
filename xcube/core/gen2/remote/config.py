@@ -51,23 +51,25 @@ class ServiceConfig(JsonObject):
     @classmethod
     def normalize(cls, service_config: ServiceConfigLike) -> "ServiceConfig":
         """Normalize given *service_config* to an instance of
-        :class:ServiceConfig.
+        `ServiceConfig`.
 
         If *service_config* is already a ServiceConfig it is returned as is.
 
-        If it is a ``str``, it is interpreted as a YAML or JSON file path
+        If it is a `str`, it is interpreted as a YAML or JSON file path
         and the configuration is read from file
-        using ``ServiceConfig.from_file()``.´The file content may include
+        using `ServiceConfig.from_file()`.´The file content may include
         template variables that are interpolated by environment variables,
         e.g. "${XCUBE_GEN_CLIENT_SECRET}".
 
-        If it is a ``dict``, it is interpreted as a JSON object and the
-        request is parsed using ``ServiceConfig.from_dict()``.
+        If it is a `dict`, it is interpreted as a JSON object and the
+        request is parsed using `ServiceConfig.from_dict()`.
 
-        :param service_config The remote configuration,
-            or configuration file path, or configuration JSON object.
-        :raise TypeError if *service_config* is not a ``CubeGeneratorRequest``,
-            ``str``, or ``dict``.
+        Args:
+            service_config The remote configuration,
+                or configuration file path, or configuration JSON object.
+        Raises:
+            TypeError if *service_config* is not a `CubeGeneratorRequest`,
+            `str`, or `dict`.
         """
         if isinstance(service_config, ServiceConfig):
             return service_config

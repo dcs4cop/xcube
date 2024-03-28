@@ -108,7 +108,7 @@ DATA_STORE_POOL_SCHEMA = JsonObjectSchema(
 
 class DataStoreConfig:
     """The configuration of a data store.
-    The class is used by :class:DataStorePool to instantiate
+    The class is used by `DataStorePool` to instantiate
     stores in a deferred manner.
 
     Args:
@@ -215,14 +215,14 @@ DataStorePoolLike = Union[str, Dict[str, Any], "DataStorePool"]
 
 
 class DataStorePool:
-    """
-    A pool of configured data store instances.
+    """A pool of configured data store instances.
 
     Actual data store instantiation only takes place lazily.
-    A pool is may be created using it :meth:from_dict() (or :meth:from_file())
+    A pool is may be created using it `from_dict()` (or `from_file()`)
     which receives a (JSON) dictionary that maps store instance names to
     store configurations:
 
+    ```
         {
             "<store_instance_id>": {
                 "store_id": "<store_id>",
@@ -235,9 +235,11 @@ class DataStorePool:
             },
             ...
         }
+    ```
 
-    :param store_configs: A dictionary that maps store instance
-        identifiers to to store configurations.
+    Args:
+        store_configs: A dictionary that maps store instance
+            identifiers to store configurations.
     """
 
     def __init__(self, store_configs: DataStoreConfigDict = None):
@@ -319,19 +321,21 @@ class DataStorePool:
     def normalize(cls, data_store_pool: DataStorePoolLike) -> "DataStorePool":
         """
         Normalize given *data_store_pool* to an instance of
-        :class:DataStorePool.
+        `DataStorePool`.
 
         If *data_store_pool* is already a DataStorePool it is returned as is.
-        If it is a ``str``, it is interpreted as a YAML or JSON file path
-        and the request is read from file using ``DataStorePool.from_file()``.
-        If it is a ``dict``, it is interpreted as a JSON object and the
-        request is parsed using ``DataStorePool.from_dict()``.
+        If it is a `str`, it is interpreted as a YAML or JSON file path
+        and the request is read from file using `DataStorePool.from_file()`.
+        If it is a `dict`, it is interpreted as a JSON object and the
+        request is parsed using `DataStorePool.from_dict()`.
 
-        :param data_store_pool The data store pool instance,
-            or data stores configuration file path, or data store pool
-            JSON object.
-        :raise TypeError if *data_store_pool* is not
-            a ``CubeGeneratorRequest``, ``str``, or ``dict``.
+        Args:
+            data_store_pool The data store pool instance,
+                or data stores configuration file path, or data store pool
+                JSON object.
+        Raises:
+            TypeError: if *data_store_pool* is not
+                a `CubeGeneratorRequest`, `str`, or `dict`.
         """
         if isinstance(data_store_pool, DataStorePool):
             return data_store_pool

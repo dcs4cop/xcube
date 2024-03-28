@@ -151,7 +151,7 @@ class DataStore(DataOpener, DataSearcher, ABC):
     Store implementers should follow the conventions outlined in
     https://xcube.readthedocs.io/en/latest/storeconv.html .
 
-    The :class:DataStore is an abstract base class that both read-only and
+    The `DataStore` is an abstract base class that both read-only and
     mutable data stores must implement.
     """
 
@@ -226,10 +226,10 @@ class DataStore(DataOpener, DataSearcher, ABC):
         The individual attributes do not have to exist in the dataset's
         metadata, they may also be generated on-the-fly.
         An example for a generic attribute name is "title".
-        A store should try to resolve ``include_attrs=["title"]``
+        A store should try to resolve `include_attrs=["title"]`
         by returning items such as
-        ``("ESACCI-L4_GHRSST-SSTdepth-OSTIA-GLOB_CDR2.1-v02.0-fv01.0.zarr",
-        {"title": "Level-4 GHRSST Analysed Sea Surface Temperature"})``.
+        `("ESACCI-L4_GHRSST-SSTdepth-OSTIA-GLOB_CDR2.1-v02.0-fv01.0.zarr",
+        {"title": "Level-4 GHRSST Analysed Sea Surface Temperature"})`.
 
         Args:
             data_type: If given, only data identifiers that are
@@ -284,7 +284,7 @@ class DataStore(DataOpener, DataSearcher, ABC):
             data_type: An optional data type. If given, it will also be
                 checked whether the data is available as the specified
                 type. May be given as type alias name, as a type, or as
-                a :class:DataType instance.
+                a `DataType` instance.
 
         Returns:
             True, if the data resource is available in this store, False
@@ -297,7 +297,7 @@ class DataStore(DataOpener, DataSearcher, ABC):
     ) -> DataDescriptor:
         """Get the descriptor for the data resource given by *data_id*.
 
-        Raises a :class:DataStoreError if *data_id* does not
+        Raises a `DataStoreError` if *data_id* does not
         exist in this store or the data is not available as the
         specified *data_type*.
 
@@ -306,8 +306,10 @@ class DataStore(DataOpener, DataSearcher, ABC):
             data_type: If given, the descriptor of the data will
                 describe the data as specified by the data type. May be
                 given as type alias name, as a type, or as a
-                :class:DataType instance.
-        :return a data-type specific data descriptor
+                `DataType` instance.
+
+        Returns:
+            a data-type specific data descriptor
 
         Raises:
             DataStoreError: If an error occurs.
@@ -336,7 +338,7 @@ class DataStore(DataOpener, DataSearcher, ABC):
                 to exist in this data store.
             data_type: An optional data type that is known to be
                 supported by this data store. May be given as type alias
-                name, as a type, or as a :class:DataType instance.
+                name, as a type, or as a `DataType` instance.
 
         Returns:
             A tuple of identifiers of data openers that can be used to
@@ -351,7 +353,7 @@ class DataStore(DataOpener, DataSearcher, ABC):
         self, data_id: str = None, opener_id: str = None
     ) -> JsonObjectSchema:
         """Get the schema for the parameters passed as *open_params* to
-        :meth:open_data(data_id, open_params).
+        `open_data(data_id, open_params)`.
 
         If *data_id* is given, the returned schema will be tailored
         to the constraints implied by the identified data resource.
@@ -386,19 +388,19 @@ class DataStore(DataOpener, DataSearcher, ABC):
         following. Note all parameters may be optional,
         the Python-types given here refer to _given_, non-Null parameters:
 
-          * ``variable_names: List[str]``: Included data variables.
+          * `variable_names: List[str]`: Included data variables.
             Available coordinate variables will be auto-included for
             any dimension of the data variables.
-          * ``bbox: Tuple[float, float, float, float]``: Spatial coverage
+          * `bbox: Tuple[float, float, float, float]`: Spatial coverage
             as xmin, ymin, xmax, ymax.
-          * ``crs: str``: Spatial CRS, e.g. "EPSG:4326" or OGC CRS URI.
-          * ``spatial_res: float``: Spatial resolution in
+          * `crs: str`: Spatial CRS, e.g. "EPSG:4326" or OGC CRS URI.
+          * `spatial_res: float`: Spatial resolution in
             coordinates of the spatial CRS.
-          * ``time_range: Tuple[Optional[str], Optional[str]]``:
+          * `time_range: Tuple[Optional[str], Optional[str]]`:
             Time range interval in UTC date/time units using ISO format.
             Start or end time may be missing which means everything until
             available start or end time.
-          * ``time_period: str`: Pandas-compatible period/frequency
+          * `time_period: str`: Pandas-compatible period/frequency
             string, e.g. "8D", "2W".
 
         E.g. applied to an optional `variable_names` parameter, this means
@@ -475,7 +477,7 @@ class MutableDataStore(DataStore, DataWriter, ABC):
         Args:
             data_type: An optional data type specifier that is known to
                 be supported by this data store. May be given as type
-                alias name, as a type, or as a :class:DataType instance.
+                alias name, as a type, or as a `DataType` instance.
 
         Returns:
             A tuple of identifiers of data writers that can be used to
@@ -488,7 +490,7 @@ class MutableDataStore(DataStore, DataWriter, ABC):
     @abstractmethod
     def get_write_data_params_schema(self, writer_id: str = None) -> JsonObjectSchema:
         """Get the schema for the parameters passed as *write_params* to
-        :meth:write_data(data, data_id, open_params).
+        `write_data(data, data_id, open_params)`.
 
         If *writer_id* is given, the returned schema will be tailored
         to the constraints implied by the identified writer.
@@ -500,9 +502,11 @@ class MutableDataStore(DataStore, DataWriter, ABC):
         multiple writers and where the store has common parameters with
         the writer:
 
+        ```python
             store_params_schema = self.get_data_store_params_schema()
             writer_params_schema = get_writer(writer_id).get_write_data_params_schema()
             return subtract_param_schemas(writer_params_schema, store_params_schema)
+        ```
 
         Args:
             writer_id: An optional data writer identifier.

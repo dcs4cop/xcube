@@ -67,16 +67,16 @@ class GridMapping(abc.ABC):
     This class cannot be instantiated directly. Use one of its factory methods
     to create instances:
 
-    * :meth:regular()
-    * :meth:from_dataset()
-    * :meth:from_coords()
+    * `regular()`
+    * `from_dataset()`
+    * `from_coords()`
 
     Some instance methods can be used to derive new instances:
 
-    * :meth:derive()
-    * :meth:scale()
-    * :meth:transform()
-    * :meth:to_regular()
+    * `derive()`
+    * `scale()`
+    * `transform()`
+    * `to_regular()`
 
     This class is thread-safe.
 
@@ -99,7 +99,6 @@ class GridMapping(abc.ABC):
         y_coords: Optional[xr.DataArray] = None,
         xy_coords: Optional[xr.DataArray] = None,
     ):
-
         width, height = _normalize_int_pair(size, name="size")
         assert_true(width > 1 and height > 1, "invalid size")
 
@@ -415,8 +414,10 @@ class GridMapping(abc.ABC):
         """Do the x,y coordinates for a regular grid?
         A regular grid has a constant delta in both
         x- and y-directions of the x- and y-coordinates.
-        :return None, if this property cannot be determined,
-            True or False otherwise.
+
+        Returns:
+            `None`, if this property cannot be determined,
+            `True` or `False` otherwise.
         """
         return self._is_regular
 
@@ -424,8 +425,10 @@ class GridMapping(abc.ABC):
     def is_j_axis_up(self) -> Optional[bool]:
         """Does the positive image j-axis point up?
         By default, the positive image j-axis points down.
-         :return None, if this property cannot be determined,
-            True or False otherwise.
+
+        Returns:
+            `None`, if this property cannot be determined,
+            `True` or `False` otherwise.
         """
         return self._is_j_axis_up
 
@@ -547,7 +550,7 @@ class GridMapping(abc.ABC):
 
         Returns:
             Bounding box in (i_min, j_min, i_max, j_max) in pixel
-            coordinates. Returns ``(-1, -1, -1, -1)`` if *xy_bbox* isn't
+            coordinates. Returns `(-1, -1, -1, -1)` if *xy_bbox* isn't
             intersecting any of the x,y coordinates.
         """
         xy_bboxes = np.array([xy_bbox], dtype=np.float64)

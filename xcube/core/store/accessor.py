@@ -50,7 +50,7 @@ def new_data_opener(
     """Get an instance of the data opener identified by *opener_id*.
 
     The optional, extra opener parameters *opener_params* may
-    be used by data store (``xcube.core.store.DataStore``)
+    be used by data store (`xcube.core.store.DataStore`)
     implementations so they can share their internal state with the opener.
 
     Args:
@@ -79,7 +79,7 @@ def new_data_writer(
     """Get an instance of the data writer identified by *writer_id*.
 
     The optional, extra writer parameters *writer_params* may be used by
-    data store (``xcube.core.store.DataStore``) implementations so they
+    data store (`xcube.core.store.DataStore`) implementations so they
     can share their internal state with the writer.
 
     Args:
@@ -207,7 +207,7 @@ class DataOpener(ABC):
     @abstractmethod
     def get_open_data_params_schema(self, data_id: str = None) -> JsonObjectSchema:
         """Get the schema for the parameters passed as *open_params* to
-        :meth:open_data(data_id, open_params).
+        `open_data(data_id, open_params)`.
         If *data_id* is given, the returned schema will be tailored
         to the constraints implied by the identified data resource.
         Some openers might not support this, therefore *data_id*
@@ -253,7 +253,7 @@ class DataDeleter(ABC):
     @abstractmethod
     def get_delete_data_params_schema(self, data_id: str = None) -> JsonObjectSchema:
         """Get the schema for the parameters passed as *delete_params*
-        to :meth:delete_data.
+        to `delete_data()`.
         If *data_id* is given, the returned schema will be tailored to
         the constraints implied by the identified data resource.
         Some deleters might not support this, therefore *data_id*
@@ -293,7 +293,7 @@ class DataWriter(DataDeleter, ABC):
     @abstractmethod
     def get_write_data_params_schema(self) -> JsonObjectSchema:
         """Get the schema for the parameters passed as *write_params* to
-        :meth:write_data(data resource, data_id, open_params).
+        `write_data(data resource, data_id, open_params)`.
 
         Returns:
             The schema for the parameters in *write_params*.

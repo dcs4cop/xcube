@@ -117,7 +117,7 @@ class ProgressState:
 
 class ProgressObserver(ABC):
     """A progress observer is notified about nested state changes when using the
-    :class:observe_progress context manager.
+    `observe_progress` context manager.
     """
 
     def on_begin(self, state_stack: Sequence[ProgressState]):

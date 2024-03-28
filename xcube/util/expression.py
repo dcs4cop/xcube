@@ -98,7 +98,8 @@ def transpile_expr(expr: str, warn=False) -> str:
     Args:
         expr: The Python expression
         warn: If warnings shall be emitted
-    :return The numpy array expression
+    Returns:
+        The numpy array expression
     """
     return _ExprTranspiler(expr, warn).transpile()
 

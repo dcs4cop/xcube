@@ -38,8 +38,8 @@ class MultiLevelDataset(metaclass=ABCMeta):
 
     The pyramid level at index zero provides the original spatial dimensions.
     The size of the spatial dimensions in subsequent levels
-    is computed by the formula ``size[index + 1] = (size[index] + 1) // 2``
-    with ``size[index]`` being the maximum size of the spatial dimensions
+    is computed by the formula `size[index + 1] = (size[index] + 1) // 2`
+    with `size[index]` being the maximum size of the spatial dimensions
     at level zero.
 
     Any dataset chunks are assumed to be the same in all levels. Usually,
@@ -77,7 +77,7 @@ class MultiLevelDataset(metaclass=ABCMeta):
     def resolutions(self) -> Sequence[Tuple[float, float]]:
         """Returns:
         the x,y resolutions for each level given in the spatial
-        units of the dataset's CRS (i.e. ``self.grid_mapping.crs``).
+        units of the dataset's CRS (i.e. `self.grid_mapping.crs`).
         """
         x_res_0, y_res_0 = self.grid_mapping.xy_res
         return [
@@ -90,7 +90,7 @@ class MultiLevelDataset(metaclass=ABCMeta):
         """Returns:
         the average x,y resolutions for each level given in the
         spatial units of the dataset's CRS (i.e.
-        ``self.grid_mapping.crs``).
+        `self.grid_mapping.crs`).
         """
         x_res_0, y_res_0 = self.grid_mapping.xy_res
         xy_res_0 = math.sqrt(x_res_0 * y_res_0)

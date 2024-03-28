@@ -30,13 +30,13 @@ from xcube.util.jsonschema import JsonObjectSchema
 # The one and only argument of the method is an xarray.Dataset.
 # Then any number of processing parameters can be passed as
 # keyword-arguments.
-# See :meth:DatasetProcessor#process_dataset.
+# See DatasetProcessor#process_dataset.
 METHOD_NAME_DATASET_PROCESSOR = "process_dataset"
 
 # Name of the (static/class) method that returns
 # the JSON Object Schema for the processor parameters.
 # The methods takes no arguments.
-# See :meth:DatasetProcessor#get_process_params_schema.
+# See DatasetProcessor#get_process_params_schema.
 METHOD_NAME_PARAMS_SCHEMA_GETTER = "get_process_params_schema"
 
 
@@ -49,7 +49,7 @@ class DatasetProcessor(ABC):
         given processing parameters *process_params*.
 
         The passed *process_params* must validate against
-        the JSON schema returned by the :meth:get_process_params_schema
+        the JSON schema returned by the `get_process_params_schema()`
         class method.
 
         Args:
@@ -63,7 +63,7 @@ class DatasetProcessor(ABC):
     @classmethod
     def get_process_params_schema(cls) -> JsonObjectSchema:
         """Get the JSON Schema for the processing parameters passed
-        to :meth:process_dataset.
+        to `process_dataset()`.
 
         The parameters are described by the JSON Object Schema's
         properties.

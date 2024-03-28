@@ -48,22 +48,22 @@ def evaluate_dataset(
 
     Two types of expression attributes are recognized in the attributes:
 
-    1. The attribute ``expression`` generates
+    1. The attribute `expression` generates
        a new variable computed from its attribute value.
-    2. The attribute ``valid_pixel_expression`` masks out
+    2. The attribute `valid_pixel_expression` masks out
        invalid variable values.
 
-    In both cases the attribuite value must be a string that forms
+    In both cases the attribute value must be a string that forms
     a valid Python expression that can reference any other preceding
     variables by name.
     The expression can also reference any flags defined by another
-    variable according the their CF attributes ``flag_meaning``
-    and ``flag_values``.
+    variable according to their CF attributes `flag_meaning`
+    and `flag_values`.
 
     Invalid variable values may be masked out using the value the
-    ``valid_pixel_expression`` attribute whose value should form
+    `valid_pixel_expression` attribute whose value should form
     a Boolean Python expression. In case, the expression
-    returns zero or false, the value of the ``_FillValue`` attribute
+    returns zero or false, the value of the `_FillValue` attribute
     or NaN will be used in the new variable.
 
     Other attributes will be stored as variable metadata as-is.

@@ -194,8 +194,8 @@ class Server(AsyncExecution):
         *args: Any,
         **kwargs: Any,
     ) -> Awaitable[ReturnT]:
-        """Concurrently runs a *function* in a ``concurrent.futures.Executor``.
-        If *executor* is ``None``, the framework's default
+        """Concurrently runs a *function* in a `concurrent.futures.Executor`.
+        If *executor* is `None`, the framework's default
         executor will be used.
 
         Args:

@@ -35,8 +35,8 @@ class CubeSchema:
         shape: A tuple of dimension sizes.
         coords: A dictionary of coordinate variables. Must have values
             for all *dims*.
-        dims: A sequence of dimension names. Defaults to ``('time',
-            'lat', 'lon')``.
+        dims: A sequence of dimension names. Defaults to `('time',
+            'lat', 'lon')`.
         chunks: A tuple of chunk sizes in each dimension.
     """
 
@@ -50,7 +50,6 @@ class CubeSchema:
         dims: Sequence[str] = None,
         chunks: Sequence[int] = None,
     ):
-
         if not shape:
             raise ValueError("shape must be a sequence of integer sizes")
         if not coords:
@@ -240,7 +239,6 @@ def get_cube_schema(cube: xr.Dataset) -> CubeSchema:
     first_coords = None
 
     for var_name, var in cube.data_vars.items():
-
         dims = var.dims
         if first_dims is None:
             first_dims = dims

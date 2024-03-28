@@ -49,30 +49,32 @@ GetChunk = Callable[["ChunkStore", str, Tuple[int, ...]], bytes]
     version="0.12.1",
 )
 class ChunkStore(MutableMapping):
-    """
-    A Zarr Store that generates datasets by allowing data variables to
+    """A Zarr Store that generates datasets by allowing data variables to
     fetch or compute their chunks by a user-defined function *get_chunk*.
-    Implements the standard Python ``MutableMapping`` interface.
+    Implements the standard Python `MutableMapping` interface.
 
-    This is how the *get_chunk* function is called:::
+    This is how the *get_chunk* function is called:
 
+    ```python
         data = get_chunk(chunk_store, var_name, chunk_indexes)
+    ```
 
-    where ``chunk_store`` is this store, ``var_name`` is the name of
-    the variable for which data is fetched, and ``chunk_indexes`` is
+    where `chunk_store` is this store, `var_name` is the name of
+    the variable for which data is fetched, and `chunk_indexes` is
     a tuple of zero-based, integer chunk indexes. The result must be
     a Python *bytes* object.
 
-    :param dims: Dimension names of all data variables,
-        e.g. ('time', 'lat', 'lon').
-    :param shape: Shape of all data variables according to *dims*,
-        e.g. (512, 720, 1480).
-    :param chunks: Chunk sizes of all data variables according to *dims*,
-        e.g. (128, 180, 180).
-    :param attrs: Global dataset attributes.
-    :param get_chunk: Default chunk fetching/computing function.
-    :param trace_store_calls: Whether to log calls
-        into the ``MutableMapping`` interface.
+    Args:
+        dims: Dimension names of all data variables,
+            e.g. ('time', 'lat', 'lon').
+        shape: Shape of all data variables according to *dims*,
+            e.g. (512, 720, 1480).
+        chunks: Chunk sizes of all data variables according to *dims*,
+            e.g. (128, 180, 180).
+        attrs: Global dataset attributes.
+        get_chunk: Default chunk fetching/computing function.
+        trace_store_calls: Whether to log calls
+            into the `MutableMapping` interface.
     """
 
     def __init__(
@@ -84,7 +86,6 @@ class ChunkStore(MutableMapping):
         get_chunk: GetChunk = None,
         trace_store_calls: bool = False,
     ):
-
         self._ndim = len(dims)
         self._dims = tuple(dims)
         self._shape = tuple(shape)
@@ -143,7 +144,6 @@ class ChunkStore(MutableMapping):
         attrs: Dict[str, Any] = None,
         get_chunk: GetChunk = None,
     ):
-
         get_chunk = get_chunk or self._get_chunk
         if get_chunk is None:
             raise ValueError("get_chunk must be given as there is no default")
@@ -280,4 +280,4 @@ class LoggingStore(LoggingZarrStore):
     version="0.12.1",
 )
 class MutableLoggingStore(LoggingStore):
-    """Mutable version of :class:LoggingStore."""
+    """Mutable version of `LoggingStore`."""

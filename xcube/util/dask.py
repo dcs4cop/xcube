@@ -51,28 +51,32 @@ def compute_array_from_func(
     *ctx_arg_names* keyword argument that is a sequence of names of special arguments passed to *user_func*.
     The following are available:
 
-    * ``shape``: The array's shape. A tuple of ints.
-    * ``chunks``: The array's chunks. A tuple of tuple of ints.
-    * ``dtype``: The array's numpy data type.
-    * ``name``: The array's name. A string or ``None``.
-    * ``block_id``: The block's unique ID. An integer number ranging from zero to number of blocks minus one.
-    * ``block_index``: The block's index as a tuple of ints.
-    * ``block_shape``: The block's shape as a tuple of ints.
-    * ``block_slices``: The block's shape as a tuple of int pair tuples.
+    * `shape`: The array's shape. A tuple of ints.
+    * `chunks`: The array's chunks. A tuple of tuple of ints.
+    * `dtype`: The array's numpy data type.
+    * `name`: The array's name. A string or `None`.
+    * `block_id`: The block's unique ID. An integer number ranging from zero to number of blocks minus one.
+    * `block_index`: The block's index as a tuple of ints.
+    * `block_shape`: The block's shape as a tuple of ints.
+    * `block_slices`: The block's shape as a tuple of int pair tuples.
 
-    :param func: User function that is called for each block of the array using arguments specified by
-        *ctx_arg_names*, *args*, and *kwargs*. It must return a numpy array of shape "block_shape" and type
-        *dtype*.
-    :param shape: The array's shape. A tuple of sizes for each array dimension.
-    :param chunks: The array's chunking. A tuple of chunk sizes for each array dimension.
-        Must be of same length as *shape*.
-    :param dtype: The array's numpy data type.
-    :param name: The array's name.
-    :param ctx_arg_names: Sequence names of arguments that are passed
-        before *args* and *kwargs* to the user function.
-    :param args: Arguments passed to the user function.
-    :param kwargs: Keyword-arguments passed to the user function.
-    :return: A chunked dask array.
+    Args:
+        func: User function that is called for each block of the array
+            using arguments specified by
+            *ctx_arg_names*, *args*, and *kwargs*.
+            It must return a numpy array of shape "block_shape" and type
+            *dtype*.
+        shape: The array's shape. A tuple of sizes for each array dimension.
+        chunks: The array's chunking. A tuple of chunk sizes for each array dimension.
+            Must be of same length as *shape*.
+        dtype: The array's numpy data type.
+        name: The array's name.
+        ctx_arg_names: Sequence names of arguments that are passed
+            before *args* and *kwargs* to the user function.
+        args: Arguments passed to the user function.
+        kwargs: Keyword-arguments passed to the user function.
+    Returns:
+         A chunked dask array.
     """
     ctx_arg_names = ctx_arg_names or []
     args = args or []
@@ -179,13 +183,13 @@ def new_cluster(
 
     Cloud resource tags can be specified in an environment variable
     XCUBE_DASK_CLUSTER_TAGS in the format
-    ``tag_1=value_1:tag_2=value_2:...:tag_n=value_n``. In case of
-    conflicts, tags specified in ``resource_tags`` will override tags
+    `tag_1=value_1:tag_2=value_2:...:tag_n=value_n`. In case of
+    conflicts, tags specified in `resource_tags` will override tags
     specified by the environment variable.
 
     The cluster provider account name can be specified in an environment
-    variable ``XCUBE_DASK_CLUSTER_ACCOUNT``. If the ``account`` argument is
-    given to ``new_cluster``, it will override the value from the environment
+    variable `XCUBE_DASK_CLUSTER_ACCOUNT`. If the `account` argument is
+    given to `new_cluster`, it will override the value from the environment
     variable.
 
     Args:

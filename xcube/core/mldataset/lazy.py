@@ -34,12 +34,12 @@ from .abc import MultiLevelDataset
 class LazyMultiLevelDataset(MultiLevelDataset, metaclass=ABCMeta):
     """A multi-level dataset where each level dataset is lazily retrieved,
     i.e. read or computed by the abstract method
-    ``get_dataset_lazily(index, **kwargs)``.
+    `get_dataset_lazily(index, **kwargs)`.
 
     Args:
         ds_id: Optional dataset identifier.
         parameters: Optional keyword arguments that will be passed to
-            the ``get_dataset_lazily`` method.
+            the `get_dataset_lazily` method.
     """
 
     def __init__(

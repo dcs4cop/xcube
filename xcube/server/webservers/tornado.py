@@ -76,7 +76,7 @@ class TornadoFramework(Framework):
     @property
     def config_schema(self) -> Optional[JsonObjectSchema]:
         """Returns the JSON Schema for the configuration of the
-        ``tornado.httpserver.HTTPServer.initialize()``
+        `tornado.httpserver.HTTPServer.initialize()`
         method.
         """
         return JsonObjectSchema(
@@ -225,16 +225,18 @@ class TornadoFramework(Framework):
 
     @staticmethod
     def path_to_pattern(path: str):
-        """
-        Convert a string *pattern* where any occurrences of ``{NAME}``
+        """Convert a string *pattern* where any occurrences of `{NAME}`
         are replaced by an equivalent regex expression which will
         assign matching character groups to NAME. Characters match until
         one of the RFC 2396 reserved characters is found or the end of
         the *pattern* is reached.
 
-        :param path: URL path
-        :return: equivalent regex pattern
-        :raise ValueError: if *pattern* is invalid
+        Args:
+            path: URL path
+        Returns:
+            equivalent regex pattern
+        Raises:
+            ValueError: if *pattern* is invalid
         """
         var_pattern = r"(?P<%s>[^\;\/\?\:\@\&\=\+\$\,]+)"
         rest_var_pattern = r"\/?(?P<%s>.*)"
@@ -292,7 +294,6 @@ class TornadoFramework(Framework):
 
 # noinspection PyAbstractClass
 class TornadoRequestHandler(tornado.web.RequestHandler):
-
     def __init__(
         self,
         application: tornado.web.Application,
@@ -422,8 +423,8 @@ class TornadoApiRequest(ApiRequest):
     ) -> str:
         """Get the URL for given *path* and *query*.
         If the *reverse* flag is set, the configuration parameter
-        ``reverse_url_prefix``, if provided, is used to construct the URL,
-        otherwise only ``url_prefix``, if provided, is used.
+        `reverse_url_prefix`, if provided, is used to construct the URL,
+        otherwise only `url_prefix`, if provided, is used.
         """
         prefix = self._url_prefix
         if reverse:

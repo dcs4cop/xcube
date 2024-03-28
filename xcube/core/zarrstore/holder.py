@@ -32,7 +32,7 @@ from xcube.util.assertions import assert_instance
 
 @xr.register_dataset_accessor("zarr_store")
 class ZarrStoreHolder:
-    """Represents a xarray dataset property ``zarr_store``.
+    """Represents a xarray dataset property `zarr_store`.
 
     It is used to permanently associate a dataset with its
     Zarr store, which would otherwise not be possible.
@@ -43,7 +43,7 @@ class ZarrStoreHolder:
     For that concept to work, datasets must be associated
     with their Zarr stores explicitly.
     Therefore, the xcube data store framework sets the
-    Zarr stores of datasets after opening them ``xr.open_zarr()``:
+    Zarr stores of datasets after opening them `xr.open_zarr()`:
 
     ```python
     dataset = xr.open_zarr(zarr_store, **open_params)
@@ -67,7 +67,7 @@ class ZarrStoreHolder:
     def get(self) -> collections.abc.MutableMapping:
         """Get the Zarr store of a dataset.
         If no Zarr store has been set, the method will use
-        ``GenericZarrStore.from_dataset()`` to create and set
+        `GenericZarrStore.from_dataset()` to create and set
         one.
 
         Returns:

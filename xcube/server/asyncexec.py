@@ -36,18 +36,20 @@ class AsyncExecution(abc.ABC):
     def call_later(
         self, delay: Union[int, float], callback: Callable, *args, **kwargs
     ) -> object:
-        """
-        Executes the given callable *callback* after *delay* seconds.
+        """Executes the given callable *callback* after *delay*
+        seconds.
 
         The method returns a handle that can be used to cancel the
         callback.
 
-        :param delay: Delay in seconds.
-        :param callback: Callback to be called.
-        :param args: Positional arguments passed to *callback*.
-        :param kwargs: Keyword arguments passed to *callback*.
-        :return: A handle that provides the methods
-            ``cancel()`` and ``cancelled()``.
+        Args:
+            delay: Delay in seconds.
+            callback: Callback to be called.
+            args: Positional arguments passed to *callback*.
+            kwargs: Keyword arguments passed to *callback*.
+        Returns:
+             A handle that provides the methods
+            `cancel()` and `cancelled()`.
         """
 
     @abc.abstractmethod
@@ -59,13 +61,15 @@ class AsyncExecution(abc.ABC):
         **kwargs: Any
     ) -> Awaitable[ReturnT]:
         """
-        Concurrently runs a *function* in a ``concurrent.futures.Executor``.
-        If *executor* is ``None``, the framework's default
+        Concurrently runs a *function* in a `concurrent.futures.Executor`.
+        If *executor* is `None`, the framework's default
         executor will be used.
 
-        :param executor: An optional executor.
-        :param function: The function to be run concurrently.
-        :param args: Positional arguments passed to *function*.
-        :param kwargs: Keyword arguments passed to *function*.
-        :return: The awaitable return value of *function*.
+        Args:
+            executor: An optional executor.
+            function: The function to be run concurrently.
+            args: Positional arguments passed to *function*.
+            kwargs: Keyword arguments passed to *function*.
+        Returns:
+            The awaitable return value of *function*.
         """

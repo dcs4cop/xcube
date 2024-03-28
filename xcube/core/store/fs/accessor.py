@@ -36,7 +36,7 @@ from ..datatype import DataType
 from ..error import DataStoreError
 
 COMMON_STORAGE_OPTIONS_SCHEMA_PROPERTIES = dict(
-    # passed to ``DirCache``, if the implementation supports
+    # passed to `DirCache`, if the implementation supports
     # directory listing caching. Pass use_listings_cache=False
     # to disable such caching.
     use_listings_cache=JsonBooleanSchema(),
@@ -77,17 +77,18 @@ class FsAccessor:
     def load_fs(
         cls, params: Dict[str, Any]
     ) -> Tuple[fsspec.AbstractFileSystem, Optional[str], Dict[str, Any]]:
-        """
-        Load a filesystem instance from *params*.
+        """Load a filesystem instance from *params*.
 
         Pops useful parameters from a copy of *params* to get
         or instantiate the filesystem.
         Returns the filesystem and *params* reduced by
         the used parameters.
 
-        :param params: Parameters passed to a filesystem
-            data store, opener, or writer call.
-        :return: A tuple comprising the filesystem, an optional root path,
+        Args:
+            params: Parameters passed to a filesystem
+                data store, opener, or writer call.
+        Returns:
+            A tuple comprising the filesystem, an optional root path,
             and the modified *params*.
         """
         params = dict(params)
@@ -148,9 +149,9 @@ class FsAccessor:
         for the parameter "storage_options" to given *param_schema*.
         """
         params_schema = copy.deepcopy(params_schema)
-        params_schema.properties[STORAGE_OPTIONS_PARAM_NAME] = (
-            cls.get_storage_options_schema()
-        )
+        params_schema.properties[
+            STORAGE_OPTIONS_PARAM_NAME
+        ] = cls.get_storage_options_schema()
         return params_schema
 
     @classmethod
@@ -171,12 +172,12 @@ class FsDataAccessor(DataOpener, DataWriter, FsAccessor, ABC):
     """Abstract base class for data accessors that
     use an underlying filesystem.
 
-    A ``FsDataAccessor`` is responsible for exactly one data type
+    A `FsDataAccessor` is responsible for exactly one data type
     and one data format.
 
     Note, for all filesystem based accessors the parameter
     *data_id* is an absolute path that is build by the store
-    according to ``f"{store.root}/{data_id}"``.
+    according to `f"{store.root}/{data_id}"`.
     The store's root may therefore only be useful to
     compute the original, relative store's *data_id*.
     """

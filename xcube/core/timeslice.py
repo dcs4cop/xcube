@@ -39,13 +39,18 @@ def find_time_slice(
     time_eps: np.timedelta64 = DEFAULT_TIME_EPS,
 ) -> Tuple[int, str]:
     """
-    Find time index and update mode for *time_stamp* in ZARR dataset given by *store*.
+    Find time index and update mode for *time_stamp* in Zarr
+    dataset given by *store*.
 
-    :param store: A zarr store.
-    :param time_stamp: Time stamp to find index for.
-    :param time_eps: Time epsilon for equality comparison, defaults to 1 millisecond.
-    :return: A tuple (time_index, 'insert') or (time_index, 'replace') if an index was found,
-        (-1, 'create') or (-1, 'append') otherwise.
+    Args:
+        store: A zarr store.
+        time_stamp: Time stamp to find index for.
+        time_eps: Time epsilon for equality comparison,
+            defaults to 1 millisecond.
+    Returns:
+        A tuple (time_index, 'insert') or (time_index, 'replace')
+        if an index was found, (-1, 'create') or (-1, 'append')
+        otherwise.
     """
     try:
         cube = xr.open_zarr(store)

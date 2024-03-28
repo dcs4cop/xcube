@@ -36,10 +36,10 @@ ExtensionPredicate = Callable[["Extension"], bool]
 class Extension:
     """An extension that provides a component of any type.
 
-    Extensions are registered in a :class:`ExtensionRegistry`.
+    Extensions are registered in a `ExtensionRegistry`.
 
     Extension objects are not meant to be instantiated directly. Instead,
-    :meth:`ExtensionRegistry.add_extension` is used to register extensions.
+    `ExtensionRegistry.add_extension()` is used to register extensions.
 
     Args:
         point: extension point identifier
@@ -58,7 +58,6 @@ class Extension:
         loader: ComponentLoader = None,
         **metadata,
     ):
-
         if point is None:
             raise ValueError(f"point must be given")
         if name is None:
@@ -239,10 +238,10 @@ class ExtensionRegistry:
 
         Either *component* or *loader* must be specified, but not both.
 
-        A given *loader* must be a callable with one positional argument *extension* of type :class:`Extension`
+        A given *loader* must be a callable with one positional argument *extension* of type `Extension`
         and is expected to return the actual extension component, which may be of any type.
         The *loader* will only be called once and only when the actual extension component
-        is requested for the first time. Consider using the function :func:`import_component` to create a
+        is requested for the first time. Consider using the function `import_component()` to create a
         loader that lazily imports a component from a module and optionally executes it.
 
         Args:
@@ -321,7 +320,7 @@ def import_component(
             "module_path:component_name"
         transform: callable that takes two positional arguments, the
             imported component and the extension of type
-            :class:`Extension`
+            `Extension`
         call: Whether to finally call the component with given
             *call_args* and *call_kwargs*
         call_args: arguments passed to a callable component if *call*

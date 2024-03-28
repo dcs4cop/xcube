@@ -88,12 +88,12 @@ def get_time_series(
     Returns a time-series dataset whose data variables have a time dimension
     but no longer have spatial dimensions,
     hence the resulting dataset's variables will only have N-2 dimensions.
-    A global attribute ``max_number_of_observations`` will be set to the
+    A global attribute `max_number_of_observations` will be set to the
     maximum number of observations
     that could have been made in each time step.
     If the given *geometry* does not overlap the cube's boundaries, or if not
     output variables remain,
-    the function returns ``None``.
+    the function returns `None`.
 
     Args:
         cube: The xcube dataset

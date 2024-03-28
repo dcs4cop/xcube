@@ -94,14 +94,14 @@ class MaskSet:
 
     @classmethod
     def get_mask_sets(cls, dataset: xr.Dataset) -> Dict[str, "MaskSet"]:
-        """For each "flag" variable in given *dataset*, turn it into a ``MaskSet``,
+        """For each "flag" variable in given *dataset*, turn it into a `MaskSet`,
         store it in a dictionary.
 
         Args:
             dataset: The dataset
 
         Returns:
-            A mapping of flag names to ``MaskSet``. Will be empty if
+            A mapping of flag names to `MaskSet`. Will be empty if
             there are no flag variables in *dataset*.
         """
         masks = {}

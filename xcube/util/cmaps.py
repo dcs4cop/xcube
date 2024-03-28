@@ -317,7 +317,7 @@ class ColormapProvider(ABC):
         Returns:
             A tuple comprising the base name of *cm_name* after striping
             any suffixes, and the colormap as an instance of
-            ``matplotlib.colors.Colormap``.
+            `matplotlib.colors.Colormap`.
         """
 
 
@@ -580,7 +580,6 @@ LogScaled = bool
 
 def _parse_snap_cpd_file(cpd_file_path: str) -> Tuple[Palette, LogScaled]:
     with fsspec.open(cpd_file_path, mode="r") as f:
-
         illegal_format_msg = f"Illegal SNAP *.cpd format: {cpd_file_path}"
 
         entries: Dict[str, str] = dict()

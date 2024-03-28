@@ -38,7 +38,7 @@ def encode_grid_mapping(
     The function removes any existing grid mappings.
 
     If the CRS of *gm* is geographic and the spatial dimension and coordinate
-    names are "lat", "lon" and *force* is ``False``, or *force* is ``None``
+    names are "lat", "lon" and *force* is `False`, or *force* is `None`
     and no former grid mapping was encoded in *ds*, then nothing else is
     done and the dataset copy is returned without further action.
 
@@ -53,7 +53,7 @@ def encode_grid_mapping(
         force: Whether to force encoding of grid mapping even if CRS is
             geographic and spatial dimension names are "lon", "lat".
             Optional value, if not provided, *force* will be assumed
-            ``True`` if a former grid mapping was encoded in *ds*.
+            `True` if a former grid mapping was encoded in *ds*.
 
     Returns:
         A copy of *ds* with *gm* encoded into it.

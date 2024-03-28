@@ -202,9 +202,9 @@ class DatasetDescriptor(DataDescriptor):
         spatial_res: The spatial extent of a pixel in crs units
         dims: A mapping of the dataset's dimensions to their sizes
         coords: mapping of the dataset's data coordinate names to
-            instances of :class:VariableDescriptor
+            instances of `VariableDescriptor`
         data_vars: A mapping of the dataset's variable names to
-            instances of :class:VariableDescriptor
+            instances of `VariableDescriptor`
         attrs: A mapping containing arbitrary attributes of the dataset
         open_params_schema: A JSON schema describing the parameters that
             may be used to open this data
@@ -383,7 +383,7 @@ class GeoDataFrameDescriptor(DataDescriptor):
         data_id: An identifier of the geopandas.GeoDataFrame
         feature_schema: A schema describing the properties of the vector
             data
-        kwargs: Parameters passed to super :class:DataDescriptor
+        kwargs: Parameters passed to super `DataDescriptor`
     """
 
     def __init__(

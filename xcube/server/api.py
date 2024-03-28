@@ -132,7 +132,7 @@ class Api(Generic[ServerContextT]):
             no configuration.
         create_ctx: Optional API context factory. If given, must be a
             callable that accepts the server context and returns a
-            ``Context`` instance for the API. Called when a new context
+            `Context` instance for the API. Called when a new context
             is required after configuration changes.
         on_start: Optional start handler. If given, must be a callable
             that accepts the server context. Called when the server
@@ -212,7 +212,7 @@ class Api(Generic[ServerContextT]):
         """Decorator that adds static route to this API.
 
         The decorator target must be a function that returns the route's
-        local root directory path either as a string or a ``pathlib.Path``.
+        local root directory path either as a string or a `pathlib.Path`.
         If it can not determine an existing path, it should return None.
 
         Args:
@@ -341,14 +341,14 @@ class Api(Generic[ServerContextT]):
         The default implementation uses the *create_ctx*
         argument passed to the constructor, if any,
         to instantiate an API context using *ctx* as only argument.
-        Otherwise, a new instance of ``ApiContext`` is returned.
+        Otherwise, a new instance of `ApiContext` is returned.
         Should not be called directly.
 
         Args:
             server_ctx: The server's current context.
 
         Returns:
-            An instance of ``Context``
+            An instance of `Context`
         """
         return self._create_ctx(server_ctx)
 
@@ -438,12 +438,12 @@ class Context(AsyncExecution, ABC):
         """Called when the server configuration changed.
         Must be implemented by derived classes in order to update
         this context with respect to the current configuration
-        ``self.config`` and the given *prev_context*, if any.
+        `self.config` and the given *prev_context*, if any.
         The method shall not be called directly.
 
         Args:
             prev_context: The previous context instance. Will be
-                ``None`` if ``on_update()`` is called for the very first
+                `None` if `on_update()` is called for the very first
                 time.
         """
 
@@ -466,7 +466,7 @@ class ApiContext(Context):
     An instance of this class is created for every API unless
     an API provides its own, specific context.
 
-    Specific context classes should derive from ``ApiContext`` and
+    Specific context classes should derive from `ApiContext` and
 
     * may override the `on_update()` method in order
       to initialize or update this context object state with
@@ -491,28 +491,28 @@ class ApiContext(Context):
 
     @property
     def apis(self) -> Tuple[Api]:
-        """Return the server context's ``apis`` property."""
+        """Return the server context's `apis` property."""
         return self.server_ctx.apis
 
     def get_open_api_doc(self, include_all: bool = False) -> Dict[str, Any]:
-        """Return the server context's ``apis`` property."""
+        """Return the server context's `apis` property."""
         return self.server_ctx.get_open_api_doc(include_all=include_all)
 
     @property
     def config(self) -> ServerConfig:
-        """Return the server context's ``config`` property."""
+        """Return the server context's `config` property."""
         return self.server_ctx.config
 
     def get_api_ctx(
         self, api_name: str, cls: Optional[Type[ApiContextT]] = None
     ) -> Optional[ApiContextT]:
-        """Calls the server context's ``get_api_ctx()`` method."""
+        """Calls the server context's `get_api_ctx()` method."""
         return self.server_ctx.get_api_ctx(api_name, cls=cls)
 
     def call_later(
         self, delay: Union[int, float], callback: Callable, *args, **kwargs
     ) -> object:
-        """Calls the server context's ``call_later()`` method."""
+        """Calls the server context's `call_later()` method."""
         return self.server_ctx.call_later(delay, callback, *args, **kwargs)
 
     def run_in_executor(
@@ -522,7 +522,7 @@ class ApiContext(Context):
         *args: Any,
         **kwargs: Any,
     ) -> Awaitable[ReturnT]:
-        """Calls the server context's ``run_in_executor()`` method."""
+        """Calls the server context's `run_in_executor()` method."""
         return self.server_ctx.run_in_executor(executor, function, *args, **kwargs)
 
     def on_update(self, prev_context: Optional["Context"]):
@@ -533,7 +533,6 @@ class ApiContext(Context):
 
 
 class ApiRequest:
-
     @abstractmethod
     def url_for_path(
         self, path: str, query: Optional[str] = None, reverse: bool = False
@@ -542,7 +541,7 @@ class ApiRequest:
         optional *query* string.
 
         The *reverse* flag controls if configuration parameter
-        ``reverse_url_prefix`` shall be used for prefixing
+        `reverse_url_prefix` shall be used for prefixing
         the returned URL.
 
         Args:

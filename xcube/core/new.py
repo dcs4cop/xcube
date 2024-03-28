@@ -62,9 +62,11 @@ def new_cube(
 
     The values of the *variables* dictionary can be either constants,
     array-like objects, or functions that compute their return value from
-    passed coordinate indexes. The expected signature is:::
+    passed coordinate indexes. The expected signature is:
 
+    ```python
         def my_func(time: int, y: int, x: int) -> Union[bool, int, float]
+    ```
 
     Args:
         title: A title. Defaults to 'Test Cube'.

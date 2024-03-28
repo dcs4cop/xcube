@@ -64,8 +64,7 @@ _TILE_URL_TEMPLATE = (
 def get_wmts_capabilities_xml(
     ctx: WmtsContext, base_url: str, tms_id: str = WMTS_CRS84_TMS_ID
 ) -> str:
-    """
-    Get WMTSCapabilities.xml according to
+    """Get WMTSCapabilities.xml according to
     https://www.ogc.org/standards/wmts, WMTS 1.0.0.
 
     We create WMTSCapabilities.xml for individual tile matrix sets.
@@ -73,11 +72,13 @@ def get_wmts_capabilities_xml(
     and make them available for the supported tile matrix sets
     "WorldCRS84Quad" and "WorldWebMercatorQuad".
 
-    :param ctx: server context
-    :param base_url: the request base URL
-    :param tms_id: time matrix set identifier,
-        must be one of "WorldCRS84Quad" or "WorldWebMercatorQuad"
-    :return: XML plain text in UTF-8 encoding
+    Args:
+        ctx: server context
+        base_url: the request base URL
+        tms_id: time matrix set identifier,
+            must be one of "WorldCRS84Quad" or "WorldWebMercatorQuad"
+    Returns:
+        XML plain text in UTF-8 encoding
     """
     element = get_capabilities_element(ctx, base_url, tms_id)
     document = Document(element)

@@ -38,12 +38,15 @@ DataTypeLike = Union[str, None, type, "DataType"]
 
 
 class DataType:
-    """
-    A well-known Python data type that also has a representation
+    """A well-known Python data type that also has a representation
     using alias names.
 
-    For example, the aliases "dataset" and "xarray.Dataset" both refer
-    to the Python data type ``xarray.Dataset```.
+    For example, the aliases "dataset" and "xarray.Dataset" both
+    refer to the Python data type `xarray.Dataset```.
+
+    Args:
+        dtype: The Python data type.
+        alias: An alias name or list of aliases.
     """
 
     _READTHEDOCS = os.environ.get("READTHEDOCS") == "True"
@@ -55,10 +58,6 @@ class DataType:
         cls._REGISTERED_DATA_TYPES.append(data_type)
 
     def __init__(self, dtype: Type, alias: Union[None, str, Sequence[str]] = None):
-        """
-        :param dtype: The Python data type.
-        :param alias: An alias name or list of aliases.
-        """
         assert_instance(dtype, type if not self._READTHEDOCS else object, name="dtype")
         if alias is not None:
             assert_instance(alias, (str, tuple, list), name="alias")
@@ -101,13 +100,14 @@ class DataType:
 
     @classmethod
     def normalize(cls, data_type: DataTypeLike) -> "DataType":
-        """
-        Normalize the given *data_type* value into
-        an instance of :class:DataType.
+        """Normalize the given *data_type* value into
+        an instance of `DataType`.
 
-        :param data_type: Another data type, maybe given as type alias name,
-            as a type, or as a DataType instance.
-        :return: a DataType instance
+        Args:
+            data_type: Another data type, maybe given as type alias name,
+                as a type, or as a DataType instance.
+        Returns:
+            a DataType instance
         """
         if isinstance(data_type, DataType):
             return data_type
@@ -126,24 +126,26 @@ class DataType:
         raise ValueError(f"cannot convert {data_type!r} into a data type")
 
     def is_sub_type_of(self, data_type: DataTypeLike) -> bool:
-        """
-        Tests whether this data type is a sub-type of or the same
+        """Tests whether this data type is a sub-type of or the same
         as another data type.
 
-        :param data_type: The other data type, may be given as type
-            alias name, as a type, or as a DataType instance.
-        :return: Whether this data type satisfies another data type.
+        Args:
+            data_type: The other data type, may be given as type
+                alias name, as a type, or as a DataType instance.
+        Returns:
+            Whether this data type satisfies another data type.
         """
         return issubclass(self.dtype, self._normalize_dtype(data_type))
 
     def is_super_type_of(self, data_type: DataTypeLike) -> bool:
-        """
-        Tests whether this data type is a super-type of or the same
+        """Tests whether this data type is a super-type of or the same
         as another data type.
 
-        :param data_type: The other data type, may be given as type
-            alias name, as a type, or as a DataType instance.
-        :return: Whether this data type satisfies another data type.
+        Args:
+            data_type: The other data type, may be given as type
+                alias name, as a type, or as a DataType instance.
+        Returns:
+            Whether this data type satisfies another data type.
         """
         return issubclass(self._normalize_dtype(data_type), self.dtype)
 
@@ -171,10 +173,10 @@ T = TypeVar("T")
 class DataIterator(Generic[T], Iterator[T], ABC):
     """An iterator for data items.
     This class is a marker type for data stores that can return data iterators
-    from their ``open_data()`` method.
+    from their `open_data()` method.
     Data stores that support data iterators are not required to yield
     instances of this class. They just have to return iterator objects
-    that yield instances of the desired item type, e.g. ``xarray.Dataset``.
+    that yield instances of the desired item type, e.g. `xarray.Dataset`.
     """
 
     @abstractmethod

@@ -32,7 +32,7 @@ def is_local_fs(fs: fsspec.AbstractFileSystem) -> bool:
 
 
 def get_fs_path_class(fs: fsspec.AbstractFileSystem) -> Type[pathlib.PurePath]:
-    """Get the appropriate ``pathlib.PurePath`` class for the filesystem *fs*."""
+    """Get the appropriate `pathlib.PurePath` class for the filesystem *fs*."""
     if is_local_fs(fs):
         # Will return PurePosixPath or a PureWindowsPath object
         return pathlib.PurePath

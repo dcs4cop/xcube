@@ -82,9 +82,10 @@ class ComputeContext(ResourcesContext):
     def __init__(self, server_ctx: Context, op_registry: OpRegistry = OP_REGISTRY):
         """Create a new compute context
 
-        :param server_ctx: the current server context object
-        :param op_registry: the registry of compute operations to use for
-                            this context
+        Args:
+            server_ctx: the current server context object
+            op_registry: the registry of compute operations to use for
+                this context
         """
         super().__init__(server_ctx)
         self._datasets_ctx: DatasetsContext = server_ctx.get_api_ctx("datasets")
@@ -110,17 +111,26 @@ class ComputeContext(ResourcesContext):
 
     @property
     def op_registry(self) -> OpRegistry:
-        """:return: the operation registry used by this compute context"""
+        """
+        Returns:
+            the operation registry used by this compute context
+        """
         return self._op_registry
 
     @property
     def datasets_ctx(self) -> DatasetsContext:
-        """:return: the datasets context used by this compute context"""
+        """
+        Returns:
+            the datasets context used by this compute context
+        """
         return self._datasets_ctx
 
     @property
     def places_ctx(self) -> PlacesContext:
-        """:return: the places context used by this compute context"""
+        """
+        Returns:
+            the places context used by this compute context
+        """
         return self._places_ctx
 
     def schedule_job(self, job_request: JobRequest) -> Job:
@@ -212,9 +222,12 @@ class ComputeContext(ResourcesContext):
     def cancel_job(self, job_id: int) -> Job:
         """Cancel a scheduled job.
 
-        :param job_id: the ID number of the job to be cancelled
-        :return: details of the cancelled job as a string-keyed dictionary
-        :raises ApiError: if the specified job cannot be found
+        Args:
+            job_id: the ID number of the job to be cancelled
+        Returns:
+            details of the cancelled job as a string-keyed dictionary
+        Raises:
+            ApiError: if the specified job cannot be found
         """
         job = self.jobs.get(job_id)
         if job is None:
@@ -238,10 +251,12 @@ class ComputeContext(ResourcesContext):
         is replaced by the dataset with the corresponding name in this
         compute context’s dataset context.
 
-        :param op: an operation
-        :param parameters: parameters with which to execute the operation
-        :return: a copy of the parameters, with dataset names replaced by
-                 datasets
+        Args:
+            op: an operation
+            parameters: parameters with which to execute the operation
+        Returns:
+            a copy of the parameters, with dataset names replaced by
+            datasets
         """
         op_info = OpInfo.get_op_info(op)
         param_py_types = op_info.effective_param_py_types
@@ -315,7 +330,7 @@ def set_job_result(job: Job, result: Dict[str, Any]):
 
     Args:
         job: job specifier (string-keyed dictionary)
-        result: results of the job
+        result: The result of the job
     """
     job["result"] = result
 

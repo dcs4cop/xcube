@@ -47,10 +47,13 @@ _PRIMITIVE_JSON_TYPES = {type(None), bool, int, float, str}
 def to_json_value(obj: Any) -> JsonValue:
     """Convert *obj* into a JSON-serializable object.
 
-    :param obj: A Python object.
-    :return: A JSON-serializable version of *obj*, or *obj*
+    Args:
+        obj: A Python object.
+    Returns:
+        A JSON-serializable version of *obj*, or *obj*
         if *obj* is already JSON-serializable.
-    :raises TypeError: If *obj* cannot be made JSON-serializable
+    Raises:
+        TypeError: If *obj* cannot be made JSON-serializable
     """
     if obj is None:
         return None

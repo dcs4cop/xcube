@@ -370,18 +370,17 @@ class DatasetGeoTiffFsDataAccessor(DatasetFsDataAccessor):
         tile_size: Tuple[int, int],
         overview_level: Optional[int] = None,
     ) -> xr.Dataset:
-        """
-        A method to open the cog/geotiff dataset using rioxarray,
-        returns xarray.Dataset
-        @param fs: abstract file system
-        @type fs: fsspec.AbstractFileSystem object.
-        @param file_path: path of the file
-        @type file_path: str
-        @param overview_level: the overview level of GeoTIFF, 0 is the first
+        """A method to open the cog/geotiff dataset using rioxarray.
+
+        Args:
+            fs: abstract file system
+            file_path: path of the file
+            overview_level: the overview level of GeoTIFF, 0 is the first
                overview and None means full resolution.
-        @type overview_level: int
-        @param tile_size: tile size as tuple.
-        @type tile_size: tuple
+            tile_size: tile size as tuple.
+
+        Returns:
+            An xarray.Dataset instance
         """
 
         if isinstance(fs, fsspec.AbstractFileSystem):

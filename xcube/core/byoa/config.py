@@ -46,9 +46,9 @@ class CodeConfig(JsonObject):
 
     Instances should always be created using one of the factory methods:
 
-    * :meth:from_callable
-    * :meth:from_code
-    * :meth:from_file_set
+    * `from_callable()`
+    * `from_code()`
+    * `from_file_set()`
 
     Args:
         _callable: Optional function or class. Cannot be given if
@@ -58,7 +58,7 @@ class CodeConfig(JsonObject):
         inline_code: Optional inline Python code string. Cannot be given
             if *_callable* or *file_set* are given.
         file_set: A file set that contains Python modules or packages.
-            Must be of type :class:FileSet. Cannot be given if
+            Must be of type `FileSet`. Cannot be given if
             *_callable* or *inline_code* are given.
         install_required: Whether *file_set* contains Python modules or
             packages that must be installed. Can only be True if
@@ -133,7 +133,7 @@ class CodeConfig(JsonObject):
         given as one or more plain text strings or callables.
 
         This will create a configuration that uses an inline
-        ``code_string`` which contains the source code.
+        `code_string` which contains the source code.
 
         Args:
             *code: The code.
@@ -170,7 +170,7 @@ class CodeConfig(JsonObject):
         valid in a local context. It cannot be JSON-serialized.
 
         To pass such configurations to a service, convert it first
-        using the :meth:to_service first.
+        using the `to_service()` method.
 
         Args:
             _callable: A function or class
@@ -196,7 +196,7 @@ class CodeConfig(JsonObject):
         """Create a code configuration from a file set.
 
         Args:
-            file_set: The file set. Can be a path or a :class:FileSet
+            file_set: The file set. Can be a path or a `FileSet`
                 instance.
             callable_ref: Reference to the callable in the *file_set*,
                 must have form "<module-name>:<callable-name>"
@@ -283,14 +283,14 @@ class CodeConfig(JsonObject):
         """Convert this code configuration so can be used by the
         local generator. This means, the returned configuration
         can be used to load executable code. i.e.
-        :meth:get_callable() will return a callable.
+        `get_callable()` method will return a callable.
 
         The returned code configuration defines either
         a callable (member _callable) or a file set that represents
         a local directory. This directory may be used without
         package installation (i.e. added to Python's sys.path) or
         used after installation (i.e. by executing
-        ```python setup.py install```).
+        `python setup.py install`).
         """
         return _for_local(self)
 
@@ -479,7 +479,7 @@ def _callable_to_module(
 ) -> CodeConfig:
     """Create a code configuration from the callable *_callable*.
 
-    This will create a configuration that uses a ``file_set``
+    This will create a configuration that uses a `file_set`
     which contains the source code for the *func_or_class*.
 
     Args:

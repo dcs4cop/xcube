@@ -45,18 +45,18 @@ CubeGeneratorRequestLike = Union[str, Dict, "CubeGeneratorRequest"]
 
 
 class CubeGeneratorRequest(JsonObject):
-    """
-    A request used to generate data cubes using cube generators.
+    """A request used to generate data cubes using cube generators.
 
-    :param input_config: A configuration for a single input.
-        Must be omitted if *input_configs* is given.
-    :param input_configs: A sequence of one or more input configurations.
-        Must be omitted if *input_config* is given.
-    :param cube_config: The target cube configuration.
-    :param code_config: The user-code configuration.
-    :param output_config: The output configuration for the target cube.
-    :param callback_config: A configuration that allows a cube generator
-        to publish progress information to a compatible endpoint.
+    Args:
+        input_config: A configuration for a single input.
+            Must be omitted if *input_configs* is given.
+        input_configs: A sequence of one or more input configurations.
+            Must be omitted if *input_config* is given.
+        cube_config: The target cube configuration.
+        code_config: The user-code configuration.
+        output_config: The output configuration for the target cube.
+        callback_config: A configuration that allows a cube generator
+            to publish progress information to a compatible endpoint.
     """
 
     def __init__(
@@ -139,19 +139,19 @@ class CubeGeneratorRequest(JsonObject):
     def normalize(cls, request: CubeGeneratorRequestLike) -> "CubeGeneratorRequest":
         """
         Normalize given *request* to an instance of
-        :class:CubeGeneratorRequest.
+        `CubeGeneratorRequest`.
 
         If *request* is already a CubeGeneratorRequest it is returned as is.
-        If it is a ``str``, it is interpreted as a YAML or JSON file path
+        If it is a `str`, it is interpreted as a YAML or JSON file path
         and the request is read from file using
-        ``CubeGeneratorRequest.from_file()``.
-        If it is a ``dict``, it is interpreted as a JSON object and the
-        request is parsed using ``CubeGeneratorRequest.from_dict()``.
+        `CubeGeneratorRequest.from_file()`.
+        If it is a `dict`, it is interpreted as a JSON object and the
+        request is parsed using `CubeGeneratorRequest.from_dict()`.
 
-        :param request The request, or request file path,
+        request The request, or request file path,
             or request JSON object.
-        :raise TypeError if *request* is not a ``CubeGeneratorRequest``,
-            ``str``, or ``dict``.
+        :raise TypeError if *request* is not a `CubeGeneratorRequest`,
+            `str`, or `dict`.
         """
         if isinstance(request, CubeGeneratorRequest):
             return request
@@ -211,7 +211,6 @@ class CubeGeneratorRequest(JsonObject):
     def _load_request_file(
         cls, gen_config_file: Optional[str], verbosity: int = 0
     ) -> Dict:
-
         if gen_config_file is not None and not os.path.exists(gen_config_file):
             raise CubeGeneratorError(
                 f"Cube generator request " f'"{gen_config_file}" not found.'

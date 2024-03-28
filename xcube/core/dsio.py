@@ -482,16 +482,15 @@ class ZarrDatasetIO(DatasetIO):
             path: File path or object storage URL.
             s3_kwargs: if *path* is an object storage URL, keyword-
                 arguments passed to S3 file system, that is
-                ``s3fs.S3FileSystem(**s3_kwargs, ...)``.
+                `s3fs.S3FileSystem(**s3_kwargs, ...)`.
             s3_client_kwargs: if *path* is an object storage URL,
                 keyword-arguments passed to S3 (boto3) client, that is
-                ``s3fs.S3FileSystem(...,
-                client_kwargs=s3_client_kwargs)``.
+                `s3fs.S3FileSystem(..., client_kwargs=s3_client_kwargs)`.
             max_cache_size: if this is a positive integer, the store
-                will be wrapped in an in-memory cache, that is ``store =
-                zarr.LRUStoreCache(store, max_size=max_cache_size)``.
+                will be wrapped in an in-memory cache, that is
+                `store = zarr.LRUStoreCache(store, max_size=max_cache_size)`.
             **kwargs: Keyword-arguments passed to xarray Zarr adapter,
-                that is ``xarray.open_zarr(..., **kwargs)``. In
+                that is `xarray.open_zarr(..., **kwargs)`. In
                 addition, the parameter **
 
         Returns:
@@ -774,10 +773,12 @@ def parse_s3_url_and_kwargs(
 ) -> Tuple[str, Dict[str, Any], Dict[str, Any]]:
     """Parses *obs_url*, *s3_kwargs*, *s3_client_kwargs* and returns a
     new tuple (*root*, *s3_kwargs*, *s3_client_kwargs*) with updated kwargs whose elements
-    can be passed to the s3fs.S3FileSystem and s3fs.S3Map constructors as follows:::
+    can be passed to the s3fs.S3FileSystem and s3fs.S3Map constructors as follows:
 
+    ```python
         obs_fs = s3fs.S3FileSystem(**s3_kwargs, client_kwargs=s3_client_kwargs)
         obs_map = s3fs.S3Map(root=root, s3=obs_fs)
+    ```
 
     Args:
         s3_url: Object storage URL, e.g. "s3://bucket/root", or

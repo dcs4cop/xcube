@@ -88,32 +88,35 @@ def compute_tiles(
     10. turn that array into an RGBA image.
     11. encode RGBA image into PNG bytes.
 
-    :param ml_dataset: Multi-level dataset
-    :param variable_names: Single variable name
-        or a sequence of three names.
-    :param tile_bbox: Tile bounding box
-    :param tile_crs: Spatial tile coordinate reference system.
-        Must be a geographical CRS, such as "EPSG:4326", or
-        web mercator, i.e. "EPSG:3857". Defaults to "CRS84".
-    :param tile_size: The tile size in pixels.
-        Can be a scalar or an integer width/height pair.
-        Defaults to 256.
-    :param level: Dataset level to be used.
-        Defaults to 0, the base level.
-    :param non_spatial_labels: Labels for the non-spatial dimensions
-        in the given variables.
-    :param as_dataset: If set, an ``xr.Dataset`` is returned
-        instead of a list of numpy arrays.
-    :param tile_enlargement: Enlargement in pixels applied to
-        the computed source tile read from the data.
-        Can be used to increase the accuracy of the borders of target
-        tiles at high zoom levels. Defaults to 1.
-    :param trace_perf: If set, detailed performance
-        metrics are logged using the level of the "xcube" logger.
-    :return: A list of numpy.ndarray instances according to variables
+    Args:
+        ml_dataset: Multi-level dataset
+            variable_names: Single variable name
+            or a sequence of three names.
+        tile_bbox: Tile bounding box
+        tile_crs: Spatial tile coordinate reference system.
+            Must be a geographical CRS, such as "EPSG:4326", or
+            web mercator, i.e. "EPSG:3857". Defaults to "CRS84".
+        tile_size: The tile size in pixels.
+            Can be a scalar or an integer width/height pair.
+            Defaults to 256.
+        level: Dataset level to be used.
+            Defaults to 0, the base level.
+            non_spatial_labels: Labels for the non-spatial dimensions
+            in the given variables.
+        as_dataset: If set, an `xr.Dataset` is returned
+            instead of a list of numpy arrays.
+        tile_enlargement: Enlargement in pixels applied to
+            the computed source tile read from the data.
+            Can be used to increase the accuracy of the borders of target
+            tiles at high zoom levels. Defaults to 1.
+        trace_perf: If set, detailed performance
+            metrics are logged using the level of the "xcube" logger.
+    Returns:
+        A list of numpy.ndarray instances according to variables
         given by *variable_names*. Returns None, if the resulting
         spatial subset would be too small.
-    :raise TileNotFoundException
+    Raises:
+         TileNotFoundException
     """
     if isinstance(variable_names, str):
         variable_names = (variable_names,)
@@ -640,7 +643,6 @@ def _get_non_spatial_labels(
         return new_labels
 
     for dim in non_spatial_dims:
-
         try:
             coord_var = dataset.coords[dim]
             if coord_var.size == 0:

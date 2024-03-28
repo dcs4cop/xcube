@@ -28,13 +28,14 @@ _DEFAULT_NAME = "value"
 def assert_not_none(
     value: Any, name: str = None, exception_type: Type[Exception] = ValueError
 ):
-    """
-    Assert *value* is not None.
+    """Assert *value* is not None.
     Otherwise, raise *exception_type*.
 
-    :param value: The value to test.
-    :param name: Name of a variable that holds *value*.
-    :param exception_type: The exception type. Default is ```ValueError```.
+    Args:
+        value: The value to test.
+        name: Name of a variable that holds *value*.
+        exception_type: The exception type.
+            Default is `ValueError`.
     """
     if value is None:
         raise exception_type(f"{name or _DEFAULT_NAME} must not be None")
@@ -49,7 +50,7 @@ def assert_given(
     Args:
         value: The value to test.
         name: Name of a variable that holds *value*.
-        exception_type: The exception type. Default is ```ValueError```.
+        exception_type: The exception type. Default is `ValueError`.
     """
     if not value:
         raise exception_type(f"{name or _DEFAULT_NAME} must be given")
