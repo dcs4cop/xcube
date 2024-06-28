@@ -1,0 +1,1344 @@
+stores:
+- data:
+  - attrs:
+      Conventions: CF-1.7
+    bbox:
+    - 0.0
+    - 50.0
+    - 5.0
+    - 52.5
+    coords:
+      lat:
+        attrs:
+          bounds: lat_bnds
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        dims:
+        - lat
+        dtype: float64
+        name: lat
+      lat_bnds:
+        attrs:
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        chunks:
+        - 250
+        - 2
+        dims:
+        - lat
+        - bnds
+        dtype: float64
+        name: lat_bnds
+      lon:
+        attrs:
+          bounds: lon_bnds
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        dims:
+        - lon
+        dtype: float64
+        name: lon
+      lon_bnds:
+        attrs:
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        chunks:
+        - 250
+        - 2
+        dims:
+        - lon
+        - bnds
+        dtype: float64
+        name: lon_bnds
+      time:
+        attrs:
+          bounds: time_bnds
+          long_name: time
+          standard_name: time
+        dims:
+        - time
+        dtype: datetime64[ns]
+        name: time
+      time_bnds:
+        attrs:
+          long_name: time
+          standard_name: time
+        chunks:
+        - 1
+        - 2
+        dims:
+        - time
+        - bnds
+        dtype: datetime64[ns]
+        name: time_bnds
+    data_id: cube-1-250-250.zarr
+    data_type: dataset
+    data_vars:
+    - attrs:
+        flag_coding_name: c2rcc_flags
+        flag_descriptions: "The input spectrum to the atmospheric correction neural\
+          \ net was out of the scope of the training range and the inversion is likely\
+          \ to be wrong\tThe input spectrum to the atmospheric correction neural net\
+          \ out of training range\tOne of the inputs to the IOP retrieval neural net\
+          \ is out of training range\tHigh downwelling transmission is indicating\
+          \ cloudy conditions\tOne of the IOPs is out of range\tApig output of the\
+          \ IOP retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tAdet output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Agelb output of the IOP retrieval neural net is at its maximum. This means\
+          \ that the true value is this value or higher.\tBpart output of the IOP\
+          \ retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tBwit output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Apig output of the IOP retrieval neural net is at its minimum. This means\
+          \ that the true value is this value or lower.\tAdet output of the IOP retrieval\
+          \ neural net is at its minimum. This means that the true value is this value\
+          \ or lower.\tAgelb output of the IOP retrieval neural net is at its minimum.\
+          \ This means that the true value is this value or lower.\tBpart output of\
+          \ the IOP retrieval neural net is at its minimum. This means that the true\
+          \ value is this value or lower.\tBwit output of the IOP retrieval neural\
+          \ net is at its minimum. This means that the true value is this value or\
+          \ lower.\tThe Rhow input spectrum to IOP neural net is probably not within\
+          \ the training range of the neural net, and the inversion is likely to be\
+          \ wrong.\tKd489 is out of range\tKdmin is out of range\tKdmin is at max\t\
+          Kdmin is at max\tThe operators valid pixel expression has resolved to true"
+        flag_masks:
+        - 1
+        - 2
+        - 4
+        - 8
+        - 16
+        - 32
+        - 64
+        - 128
+        - 256
+        - 512
+        - 1024
+        - 2048
+        - 4096
+        - 8192
+        - 16384
+        - 32768
+        - 65536
+        - 131072
+        - 262144
+        - 524288
+        - -2147483648
+        flag_meanings: Rtosa_OOS Rtosa_OOR Rhow_OOR Cloud_risk Iop_OOR Apig_at_max
+          Adet_at_max Agelb_at_max Bpart_at_max Bwit_at_max Apig_at_min Adet_at_min
+          Agelb_at_min Bpart_at_min Bwit_at_min Rhow_OOS Kd489_OOR Kdmin_OOR Kd489_at_max
+          Kdmin_at_max Valid_PE
+        long_name: C2RCC quality flags
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: c2rcc_flags
+    - attrs:
+        color_table_blue_values:
+        - 128
+        - 255
+        - 255
+        - 255
+        - 255
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        color_table_green_values:
+        - 0
+        - 0
+        - 102
+        - 204
+        - 255
+        - 128
+        - 255
+        - 95
+        - 0
+        - 0
+        color_table_red_values:
+        - 0
+        - 0
+        - 51
+        - 0
+        - 0
+        - 0
+        - 255
+        - 255
+        - 215
+        - 150
+        color_table_sample_values:
+        - 0.0
+        - 0.5
+        - 1.0
+        - 2.0
+        - 3.0
+        - 4.5
+        - 13.0
+        - 25.0
+        - 30.0
+        - 40.0
+        long_name: Chlorophyll concentration
+        units: mg m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_chl
+    - attrs:
+        long_name: Total suspended matter dry weight concentration
+        units: g m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_tsm
+    - attrs:
+        long_name: Irradiance attenuation coefficient at 489 nm
+        units: m^-1
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: kd489
+    - attrs:
+        flag_coding_name: quality_flags
+        flag_descriptions: ''
+        flag_masks:
+        - -2147483648
+        - 1073741824
+        - 536870912
+        - 268435456
+        - 134217728
+        - 67108864
+        - 33554432
+        - 16777216
+        - 8388608
+        - 4194304
+        - 2097152
+        - 1048576
+        - 524288
+        - 262144
+        - 131072
+        - 65536
+        - 32768
+        - 16384
+        - 8192
+        - 4096
+        - 2048
+        - 1024
+        - 512
+        - 256
+        - 128
+        - 64
+        - 32
+        - 16
+        - 8
+        - 4
+        - 2
+        - 1
+        flag_meanings: land coastline fresh_inland_water tidal_region bright straylight_risk
+          invalid cosmetic duplicated sun_glint_risk dubious saturated_Oa01 saturated_Oa02
+          saturated_Oa03 saturated_Oa04 saturated_Oa05 saturated_Oa06 saturated_Oa07
+          saturated_Oa08 saturated_Oa09 saturated_Oa10 saturated_Oa11 saturated_Oa12
+          saturated_Oa13 saturated_Oa14 saturated_Oa15 saturated_Oa16 saturated_Oa17
+          saturated_Oa18 saturated_Oa19 saturated_Oa20 saturated_Oa21
+        long_name: Classification and quality flags
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: quality_flags
+    dims:
+      bnds: 2
+      lat: 1000
+      lon: 2000
+      time: 5
+    spatial_res: 0.0024999999999977263
+    time_range:
+    - '2017-01-16'
+    - '2017-01-30'
+  - attrs:
+      Conventions: CF-1.6
+      TileSize: 128:1190
+      auto_grouping: iop:conc:rtoa:rrs:rhown:kd:unc
+      metadata_profile: beam
+      metadata_version: '0.5'
+      product_type: C2RCC_OLCI
+      start_date: 16-JAN-2017 10:09:05.396603
+      stop_date: 16-JAN-2017 10:09:38.271909
+      tiepoint_coordinates: TP_longitude TP_latitude
+    bbox:
+    - 0.0
+    - 50.0
+    - 5.0
+    - 52.5
+    coords:
+      lat:
+        attrs:
+          bounds: lat_bnds
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        dims:
+        - lat
+        dtype: float64
+        name: lat
+      lat_bnds:
+        attrs:
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        dims:
+        - lat
+        - bnds
+        dtype: float64
+        name: lat_bnds
+      lon:
+        attrs:
+          bounds: lon_bnds
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        dims:
+        - lon
+        dtype: float64
+        name: lon
+      lon_bnds:
+        attrs:
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        dims:
+        - lon
+        - bnds
+        dtype: float64
+        name: lon_bnds
+      time:
+        attrs:
+          bounds: time_bnds
+          long_name: time
+          standard_name: time
+        dims:
+        - time
+        dtype: datetime64[ns]
+        name: time
+      time_bnds:
+        attrs:
+          long_name: time
+          standard_name: time
+        dims:
+        - time
+        - bnds
+        dtype: datetime64[ns]
+        name: time_bnds
+    data_id: cube.nc
+    data_type: dataset
+    data_vars:
+    - attrs:
+        flag_coding_name: quality_flags
+        flag_descriptions: ''
+        flag_masks:
+        - -2147483648
+        - 1073741824
+        - 536870912
+        - 268435456
+        - 134217728
+        - 67108864
+        - 33554432
+        - 16777216
+        - 8388608
+        - 4194304
+        - 2097152
+        - 1048576
+        - 524288
+        - 262144
+        - 131072
+        - 65536
+        - 32768
+        - 16384
+        - 8192
+        - 4096
+        - 2048
+        - 1024
+        - 512
+        - 256
+        - 128
+        - 64
+        - 32
+        - 16
+        - 8
+        - 4
+        - 2
+        - 1
+        flag_meanings: land coastline fresh_inland_water tidal_region bright straylight_risk
+          invalid cosmetic duplicated sun_glint_risk dubious saturated_Oa01 saturated_Oa02
+          saturated_Oa03 saturated_Oa04 saturated_Oa05 saturated_Oa06 saturated_Oa07
+          saturated_Oa08 saturated_Oa09 saturated_Oa10 saturated_Oa11 saturated_Oa12
+          saturated_Oa13 saturated_Oa14 saturated_Oa15 saturated_Oa16 saturated_Oa17
+          saturated_Oa18 saturated_Oa19 saturated_Oa20 saturated_Oa21
+        long_name: Classification and quality flags
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: quality_flags
+    - attrs:
+        long_name: Irradiance attenuation coefficient at 489 nm
+        units: m^-1
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: kd489
+    - attrs:
+        long_name: Total suspended matter dry weight concentration
+        units: g m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_tsm
+    - attrs:
+        color_table_blue_values:
+        - 128
+        - 255
+        - 255
+        - 255
+        - 255
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        color_table_green_values:
+        - 0
+        - 0
+        - 102
+        - 204
+        - 255
+        - 128
+        - 255
+        - 95
+        - 0
+        - 0
+        color_table_red_values:
+        - 0
+        - 0
+        - 51
+        - 0
+        - 0
+        - 0
+        - 255
+        - 255
+        - 215
+        - 150
+        color_table_sample_values:
+        - 0.0
+        - 0.5
+        - 1.0
+        - 2.0
+        - 3.0
+        - 4.5
+        - 13.0
+        - 25.0
+        - 30.0
+        - 40.0
+        long_name: Chlorophylll concentration
+        units: mg m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_chl
+    - attrs:
+        flag_coding_name: c2rcc_flags
+        flag_descriptions: "The input spectrum to the atmospheric correction neural\
+          \ net was out of the scope of the training range and the inversion is likely\
+          \ to be wrong\tThe input spectrum to the atmospheric correction neural net\
+          \ out of training range\tOne of the inputs to the IOP retrieval neural net\
+          \ is out of training range\tHigh downwelling transmission is indicating\
+          \ cloudy conditions\tOne of the IOPs is out of range\tApig output of the\
+          \ IOP retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tAdet output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Agelb output of the IOP retrieval neural net is at its maximum. This means\
+          \ that the true value is this value or higher.\tBpart output of the IOP\
+          \ retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tBwit output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Apig output of the IOP retrieval neural net is at its minimum. This means\
+          \ that the true value is this value or lower.\tAdet output of the IOP retrieval\
+          \ neural net is at its minimum. This means that the true value is this value\
+          \ or lower.\tAgelb output of the IOP retrieval neural net is at its minimum.\
+          \ This means that the true value is this value or lower.\tBpart output of\
+          \ the IOP retrieval neural net is at its minimum. This means that the true\
+          \ value is this value or lower.\tBwit output of the IOP retrieval neural\
+          \ net is at its minimum. This means that the true value is this value or\
+          \ lower.\tThe Rhow input spectrum to IOP neural net is probably not within\
+          \ the training range of the neural net, and the inversion is likely to be\
+          \ wrong.\tKd489 is out of range\tKdmin is out of range\tKdmin is at max\t\
+          Kdmin is at max\tThe operators valid pixel expression has resolved to true"
+        flag_masks:
+        - 1
+        - 2
+        - 4
+        - 8
+        - 16
+        - 32
+        - 64
+        - 128
+        - 256
+        - 512
+        - 1024
+        - 2048
+        - 4096
+        - 8192
+        - 16384
+        - 32768
+        - 65536
+        - 131072
+        - 262144
+        - 524288
+        - -2147483648
+        flag_meanings: Rtosa_OOS Rtosa_OOR Rhow_OOR Cloud_risk Iop_OOR Apig_at_max
+          Adet_at_max Agelb_at_max Bpart_at_max Bwit_at_max Apig_at_min Adet_at_min
+          Agelb_at_min Bpart_at_min Bwit_at_min Rhow_OOS Kd489_OOR Kdmin_OOR Kd489_at_max
+          Kdmin_at_max Valid_PE
+        long_name: C2RCC quality flags
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: c2rcc_flags
+    dims:
+      bnds: 2
+      lat: 1000
+      lon: 2000
+      time: 5
+    spatial_res: 0.0024999999999977263
+    time_range:
+    - '2017-01-16'
+    - '2017-01-30'
+  - attrs:
+      Conventions: CF-1.7
+    bbox:
+    - 0.0
+    - 50.0
+    - 5.0
+    - 52.5
+    coords:
+      lat:
+        attrs:
+          bounds: lat_bnds
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        dims:
+        - lat
+        dtype: float64
+        name: lat
+      lat_bnds:
+        attrs:
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        chunks:
+        - 1000
+        - 2
+        dims:
+        - lat
+        - bnds
+        dtype: float64
+        name: lat_bnds
+      lon:
+        attrs:
+          bounds: lon_bnds
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        dims:
+        - lon
+        dtype: float64
+        name: lon
+      lon_bnds:
+        attrs:
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        chunks:
+        - 2000
+        - 2
+        dims:
+        - lon
+        - bnds
+        dtype: float64
+        name: lon_bnds
+      time:
+        attrs:
+          bounds: time_bnds
+          long_name: time
+          standard_name: time
+        dims:
+        - time
+        dtype: datetime64[ns]
+        name: time
+      time_bnds:
+        attrs:
+          long_name: time
+          standard_name: time
+        chunks:
+        - 5
+        - 2
+        dims:
+        - time
+        - bnds
+        dtype: datetime64[ns]
+        name: time_bnds
+    data_id: cube-1-250-250.levels
+    data_type: mldataset
+    data_vars:
+    - attrs:
+        flag_coding_name: c2rcc_flags
+        flag_descriptions: "The input spectrum to the atmospheric correction neural\
+          \ net was out of the scope of the training range and the inversion is likely\
+          \ to be wrong\tThe input spectrum to the atmospheric correction neural net\
+          \ out of training range\tOne of the inputs to the IOP retrieval neural net\
+          \ is out of training range\tHigh downwelling transmission is indicating\
+          \ cloudy conditions\tOne of the IOPs is out of range\tApig output of the\
+          \ IOP retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tAdet output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Agelb output of the IOP retrieval neural net is at its maximum. This means\
+          \ that the true value is this value or higher.\tBpart output of the IOP\
+          \ retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tBwit output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Apig output of the IOP retrieval neural net is at its minimum. This means\
+          \ that the true value is this value or lower.\tAdet output of the IOP retrieval\
+          \ neural net is at its minimum. This means that the true value is this value\
+          \ or lower.\tAgelb output of the IOP retrieval neural net is at its minimum.\
+          \ This means that the true value is this value or lower.\tBpart output of\
+          \ the IOP retrieval neural net is at its minimum. This means that the true\
+          \ value is this value or lower.\tBwit output of the IOP retrieval neural\
+          \ net is at its minimum. This means that the true value is this value or\
+          \ lower.\tThe Rhow input spectrum to IOP neural net is probably not within\
+          \ the training range of the neural net, and the inversion is likely to be\
+          \ wrong.\tKd489 is out of range\tKdmin is out of range\tKdmin is at max\t\
+          Kdmin is at max\tThe operators valid pixel expression has resolved to true"
+        flag_masks:
+        - 1
+        - 2
+        - 4
+        - 8
+        - 16
+        - 32
+        - 64
+        - 128
+        - 256
+        - 512
+        - 1024
+        - 2048
+        - 4096
+        - 8192
+        - 16384
+        - 32768
+        - 65536
+        - 131072
+        - 262144
+        - 524288
+        - -2147483648
+        flag_meanings: Rtosa_OOS Rtosa_OOR Rhow_OOR Cloud_risk Iop_OOR Apig_at_max
+          Adet_at_max Agelb_at_max Bpart_at_max Bwit_at_max Apig_at_min Adet_at_min
+          Agelb_at_min Bpart_at_min Bwit_at_min Rhow_OOS Kd489_OOR Kdmin_OOR Kd489_at_max
+          Kdmin_at_max Valid_PE
+        long_name: C2RCC quality flags
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: c2rcc_flags
+    - attrs:
+        color_table_blue_values:
+        - 128
+        - 255
+        - 255
+        - 255
+        - 255
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        color_table_green_values:
+        - 0
+        - 0
+        - 102
+        - 204
+        - 255
+        - 128
+        - 255
+        - 95
+        - 0
+        - 0
+        color_table_red_values:
+        - 0
+        - 0
+        - 51
+        - 0
+        - 0
+        - 0
+        - 255
+        - 255
+        - 215
+        - 150
+        color_table_sample_values:
+        - 0.0
+        - 0.5
+        - 1.0
+        - 2.0
+        - 3.0
+        - 4.5
+        - 13.0
+        - 25.0
+        - 30.0
+        - 40.0
+        long_name: Chlorophyll concentration
+        units: mg m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_chl
+    - attrs:
+        long_name: Total suspended matter dry weight concentration
+        units: g m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_tsm
+    - attrs:
+        long_name: Irradiance attenuation coefficient at 489 nm
+        units: m^-1
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: kd489
+    - attrs:
+        flag_coding_name: quality_flags
+        flag_descriptions: ''
+        flag_masks:
+        - -2147483648
+        - 1073741824
+        - 536870912
+        - 268435456
+        - 134217728
+        - 67108864
+        - 33554432
+        - 16777216
+        - 8388608
+        - 4194304
+        - 2097152
+        - 1048576
+        - 524288
+        - 262144
+        - 131072
+        - 65536
+        - 32768
+        - 16384
+        - 8192
+        - 4096
+        - 2048
+        - 1024
+        - 512
+        - 256
+        - 128
+        - 64
+        - 32
+        - 16
+        - 8
+        - 4
+        - 2
+        - 1
+        flag_meanings: land coastline fresh_inland_water tidal_region bright straylight_risk
+          invalid cosmetic duplicated sun_glint_risk dubious saturated_Oa01 saturated_Oa02
+          saturated_Oa03 saturated_Oa04 saturated_Oa05 saturated_Oa06 saturated_Oa07
+          saturated_Oa08 saturated_Oa09 saturated_Oa10 saturated_Oa11 saturated_Oa12
+          saturated_Oa13 saturated_Oa14 saturated_Oa15 saturated_Oa16 saturated_Oa17
+          saturated_Oa18 saturated_Oa19 saturated_Oa20 saturated_Oa21
+        long_name: Classification and quality flags
+      chunks:
+      - 1
+      - 250
+      - 250
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: quality_flags
+    dims:
+      bnds: 2
+      lat: 1000
+      lon: 2000
+      time: 5
+    num_levels: 3
+    spatial_res: 0.0024999999999977263
+    time_range:
+    - '2017-01-16'
+    - '2017-01-30'
+  - attrs:
+      Conventions: CF-1.7
+    bbox:
+    - 0.0
+    - 50.0
+    - 5.0
+    - 52.5
+    coords:
+      lat:
+        attrs:
+          bounds: lat_bnds
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        dims:
+        - lat
+        dtype: float64
+        name: lat
+      lat_bnds:
+        attrs:
+          long_name: latitude
+          standard_name: latitude
+          units: degrees_north
+        chunks:
+        - 100
+        - 2
+        dims:
+        - lat
+        - bnds
+        dtype: float64
+        name: lat_bnds
+      lon:
+        attrs:
+          bounds: lon_bnds
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        dims:
+        - lon
+        dtype: float64
+        name: lon
+      lon_bnds:
+        attrs:
+          long_name: longitude
+          standard_name: longitude
+          units: degrees_east
+        chunks:
+        - 200
+        - 2
+        dims:
+        - lon
+        - bnds
+        dtype: float64
+        name: lon_bnds
+      time:
+        attrs:
+          bounds: time_bnds
+          long_name: time
+          standard_name: time
+        dims:
+        - time
+        dtype: datetime64[ns]
+        name: time
+      time_bnds:
+        attrs:
+          long_name: time
+          standard_name: time
+        chunks:
+        - 5
+        - 2
+        dims:
+        - time
+        - bnds
+        dtype: datetime64[ns]
+        name: time_bnds
+    data_id: cube-5-100-200.zarr
+    data_type: dataset
+    data_vars:
+    - attrs:
+        flag_coding_name: c2rcc_flags
+        flag_descriptions: "The input spectrum to the atmospheric correction neural\
+          \ net was out of the scope of the training range and the inversion is likely\
+          \ to be wrong\tThe input spectrum to the atmospheric correction neural net\
+          \ out of training range\tOne of the inputs to the IOP retrieval neural net\
+          \ is out of training range\tHigh downwelling transmission is indicating\
+          \ cloudy conditions\tOne of the IOPs is out of range\tApig output of the\
+          \ IOP retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tAdet output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Agelb output of the IOP retrieval neural net is at its maximum. This means\
+          \ that the true value is this value or higher.\tBpart output of the IOP\
+          \ retrieval neural net is at its maximum. This means that the true value\
+          \ is this value or higher.\tBwit output of the IOP retrieval neural net\
+          \ is at its maximum. This means that the true value is this value or higher.\t\
+          Apig output of the IOP retrieval neural net is at its minimum. This means\
+          \ that the true value is this value or lower.\tAdet output of the IOP retrieval\
+          \ neural net is at its minimum. This means that the true value is this value\
+          \ or lower.\tAgelb output of the IOP retrieval neural net is at its minimum.\
+          \ This means that the true value is this value or lower.\tBpart output of\
+          \ the IOP retrieval neural net is at its minimum. This means that the true\
+          \ value is this value or lower.\tBwit output of the IOP retrieval neural\
+          \ net is at its minimum. This means that the true value is this value or\
+          \ lower.\tThe Rhow input spectrum to IOP neural net is probably not within\
+          \ the training range of the neural net, and the inversion is likely to be\
+          \ wrong.\tKd489 is out of range\tKdmin is out of range\tKdmin is at max\t\
+          Kdmin is at max\tThe operators valid pixel expression has resolved to true"
+        flag_masks:
+        - 1
+        - 2
+        - 4
+        - 8
+        - 16
+        - 32
+        - 64
+        - 128
+        - 256
+        - 512
+        - 1024
+        - 2048
+        - 4096
+        - 8192
+        - 16384
+        - 32768
+        - 65536
+        - 131072
+        - 262144
+        - 524288
+        - -2147483648
+        flag_meanings: Rtosa_OOS Rtosa_OOR Rhow_OOR Cloud_risk Iop_OOR Apig_at_max
+          Adet_at_max Agelb_at_max Bpart_at_max Bwit_at_max Apig_at_min Adet_at_min
+          Agelb_at_min Bpart_at_min Bwit_at_min Rhow_OOS Kd489_OOR Kdmin_OOR Kd489_at_max
+          Kdmin_at_max Valid_PE
+        long_name: C2RCC quality flags
+      chunks:
+      - 5
+      - 100
+      - 200
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: c2rcc_flags
+    - attrs:
+        color_table_blue_values:
+        - 128
+        - 255
+        - 255
+        - 255
+        - 255
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        color_table_green_values:
+        - 0
+        - 0
+        - 102
+        - 204
+        - 255
+        - 128
+        - 255
+        - 95
+        - 0
+        - 0
+        color_table_red_values:
+        - 0
+        - 0
+        - 51
+        - 0
+        - 0
+        - 0
+        - 255
+        - 255
+        - 215
+        - 150
+        color_table_sample_values:
+        - 0.0
+        - 0.5
+        - 1.0
+        - 2.0
+        - 3.0
+        - 4.5
+        - 13.0
+        - 25.0
+        - 30.0
+        - 40.0
+        long_name: Chlorophyll concentration
+        units: mg m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 5
+      - 100
+      - 200
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_chl
+    - attrs:
+        long_name: Total suspended matter dry weight concentration
+        units: g m^-3
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 5
+      - 100
+      - 200
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: conc_tsm
+    - attrs:
+        long_name: Irradiance attenuation coefficient at 489 nm
+        units: m^-1
+        valid_pixel_expression: c2rcc_flags.Valid_PE
+      chunks:
+      - 5
+      - 100
+      - 200
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: kd489
+    - attrs:
+        flag_coding_name: quality_flags
+        flag_descriptions: ''
+        flag_masks:
+        - -2147483648
+        - 1073741824
+        - 536870912
+        - 268435456
+        - 134217728
+        - 67108864
+        - 33554432
+        - 16777216
+        - 8388608
+        - 4194304
+        - 2097152
+        - 1048576
+        - 524288
+        - 262144
+        - 131072
+        - 65536
+        - 32768
+        - 16384
+        - 8192
+        - 4096
+        - 2048
+        - 1024
+        - 512
+        - 256
+        - 128
+        - 64
+        - 32
+        - 16
+        - 8
+        - 4
+        - 2
+        - 1
+        flag_meanings: land coastline fresh_inland_water tidal_region bright straylight_risk
+          invalid cosmetic duplicated sun_glint_risk dubious saturated_Oa01 saturated_Oa02
+          saturated_Oa03 saturated_Oa04 saturated_Oa05 saturated_Oa06 saturated_Oa07
+          saturated_Oa08 saturated_Oa09 saturated_Oa10 saturated_Oa11 saturated_Oa12
+          saturated_Oa13 saturated_Oa14 saturated_Oa15 saturated_Oa16 saturated_Oa17
+          saturated_Oa18 saturated_Oa19 saturated_Oa20 saturated_Oa21
+        long_name: Classification and quality flags
+      chunks:
+      - 5
+      - 100
+      - 200
+      dims:
+      - time
+      - lat
+      - lon
+      dtype: float64
+      name: quality_flags
+    dims:
+      bnds: 2
+      lat: 1000
+      lon: 2000
+      time: 5
+    spatial_res: 0.0024999999999977263
+    time_range:
+    - '2017-01-16'
+    - '2017-01-30'
+  - attrs:
+      source: file:///home/konstantin/bc_kon/01_coding/01_github/xcube/examples/serve/demo/sample-geotiff.tif
+    bbox:
+    - 223586.23651964564
+    - 4184720.13006879
+    - 259261.49928124566
+    - 4217906.977453323
+    coords:
+      spatial_ref:
+        attrs:
+          GeoTransform: 223586.23651964564 23.927070933333344 0.0 4217906.977453323
+            0.0 -23.927070933333344
+          crs_wkt: PROJCS["NAD83 / UTM zone 18N",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS
+            1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-75],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","26918"]]
+          false_easting: 500000.0
+          false_northing: 0.0
+          geographic_crs_name: NAD83
+          grid_mapping_name: transverse_mercator
+          horizontal_datum_name: North American Datum 1983
+          inverse_flattening: 298.257222101
+          latitude_of_projection_origin: 0.0
+          longitude_of_central_meridian: -75.0
+          longitude_of_prime_meridian: 0.0
+          prime_meridian_name: Greenwich
+          projected_crs_name: NAD83 / UTM zone 18N
+          reference_ellipsoid_name: GRS 1980
+          scale_factor_at_central_meridian: 0.9996
+          semi_major_axis: 6378137.0
+          semi_minor_axis: 6356752.314140356
+          spatial_ref: PROJCS["NAD83 / UTM zone 18N",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS
+            1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-75],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","26918"]]
+        dims: []
+        dtype: int64
+        name: spatial_ref
+      x:
+        dims:
+        - x
+        dtype: float64
+        name: x
+      y:
+        dims:
+        - y
+        dtype: float64
+        name: y
+    data_id: sample-geotiff.tif
+    data_type: mldataset
+    data_vars:
+    - attrs:
+        AREA_OR_POINT: Area
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 512
+      - 512
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_1
+    - attrs:
+        AREA_OR_POINT: Area
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 512
+      - 512
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_2
+    - attrs:
+        AREA_OR_POINT: Area
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 512
+      - 512
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_3
+    dims:
+      x: 1491
+      y: 1387
+    num_levels: 1
+    spatial_res: 23.927070933394134
+    time_range:
+    - null
+    - null
+  - attrs:
+      source: file:///home/konstantin/bc_kon/01_coding/01_github/xcube/examples/serve/demo/sample-cog.tif
+    bbox:
+    - 399960.0
+    - 3890260.0
+    - 509720.0
+    - 4000020.0
+    coords:
+      spatial_ref:
+        attrs:
+          GeoTransform: 399960.0 320.0 0.0 4000020.0 0.0 -320.0
+          crs_wkt: PROJCS["WGS 84 / UTM zone 13N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS
+            84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-105],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32613"]]
+          false_easting: 500000.0
+          false_northing: 0.0
+          geographic_crs_name: WGS 84
+          grid_mapping_name: transverse_mercator
+          horizontal_datum_name: World Geodetic System 1984
+          inverse_flattening: 298.257223563
+          latitude_of_projection_origin: 0.0
+          longitude_of_central_meridian: -105.0
+          longitude_of_prime_meridian: 0.0
+          prime_meridian_name: Greenwich
+          projected_crs_name: WGS 84 / UTM zone 13N
+          reference_ellipsoid_name: WGS 84
+          scale_factor_at_central_meridian: 0.9996
+          semi_major_axis: 6378137.0
+          semi_minor_axis: 6356752.314245179
+          spatial_ref: PROJCS["WGS 84 / UTM zone 13N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS
+            84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-105],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32613"]]
+        dims: []
+        dtype: int64
+        name: spatial_ref
+      x:
+        dims:
+        - x
+        dtype: float64
+        name: x
+      y:
+        dims:
+        - y
+        dtype: float64
+        name: y
+    data_id: sample-cog.tif
+    data_type: mldataset
+    data_vars:
+    - attrs:
+        AREA_OR_POINT: Area
+        OVR_RESAMPLING_ALG: AVERAGE
+        _FillValue: 0
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 343
+      - 343
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_1
+    - attrs:
+        AREA_OR_POINT: Area
+        OVR_RESAMPLING_ALG: AVERAGE
+        _FillValue: 0
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 343
+      - 343
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_2
+    - attrs:
+        AREA_OR_POINT: Area
+        OVR_RESAMPLING_ALG: AVERAGE
+        _FillValue: 0
+        add_offset: 0.0
+        grid_mapping: spatial_ref
+        scale_factor: 1.0
+      chunks:
+      - 343
+      - 343
+      dims:
+      - y
+      - x
+      dtype: uint8
+      name: band_3
+    dims:
+      x: 343
+      y: 343
+    num_levels: 3
+    spatial_res: 320.0
+    time_range:
+    - null
+    - null
+  data_type: null
+  description: null
+  store_id: this_dir
+  store_instance_id: this_dir
+  title: null

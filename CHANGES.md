@@ -1,9 +1,13 @@
-## Changes in 1.6.1.dev1 (in development)
+## Changes in 1.7.0.dev0 (in development)
 
 * Migrated the `.github/workflows/xcube_build_docker.yaml` and the corresponding 
   `Dockerfile` from `setup.py` to `pyproject.toml`. Additionally, updated the relevant 
   documentation in `doc/source` to reflect this change from `setup.py` to
   `pyproject.toml.` (related to #992) 
+
+* The xcube server STAC publication has been adjusted so that the data store
+  parameters and data ID, which are needed to open the data, 
+  are now included with the asset (#1020).
 
 ## Changes in 1.6.0
 
