@@ -9,16 +9,7 @@ import os
 import os.path
 import warnings
 from functools import cached_property
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Callable,
-    Set,
-    Union,
-)
+from typing import Any, Optional, Callable, Union
 from collections.abc import Collection, Mapping
 
 import numpy as np
@@ -27,7 +18,8 @@ import pyproj
 import xarray as xr
 
 from xcube.constants import LOG
-from xcube.core.mldataset import BaseMultiLevelDataset, IdentityMultiLevelDataset
+from xcube.core.mldataset import BaseMultiLevelDataset
+from xcube.core.mldataset import IdentityMultiLevelDataset
 from xcube.core.mldataset import MultiLevelDataset
 from xcube.core.mldataset import augment_ml_dataset
 from xcube.core.mldataset import open_ml_dataset_from_python_code
@@ -38,6 +30,10 @@ from xcube.core.store import DatasetDescriptor
 from xcube.core.store import MULTI_LEVEL_DATASET_TYPE
 from xcube.core.tile import get_var_cmap_params
 from xcube.core.tile import get_var_valid_range
+from xcube.core.tile import DEFAULT_CMAP_NAME
+from xcube.core.tile import DEFAULT_CMAP_NORM
+from xcube.core.tile import DEFAULT_VALUE_RANGE
+from xcube.core.varexpr import split_var_assignment
 from xcube.server.api import Context, ApiError
 from xcube.server.api import ServerConfig
 from xcube.server.config import is_absolute_path
@@ -507,6 +503,12 @@ class DatasetsContext(ResourcesContext):
     def get_color_mapping(
         self, ds_id: str, var_name: str
     ) -> tuple[str, str, tuple[float, float]]:
+
+        if split_var_assignment(var_name)[1]:
+            # var_name is an assignment expression, the result is unknown yet,
+            # so we must return default values here.
+            return DEFAULT_CMAP_NAME, DEFAULT_CMAP_NORM, DEFAULT_VALUE_RANGE
+
         cmap_name = None
         cmap_norm = None
         cmap_vmin, cmap_vmax = None, None

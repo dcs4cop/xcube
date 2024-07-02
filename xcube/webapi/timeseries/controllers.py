@@ -2,8 +2,7 @@
 # Permissions are hereby granted under the terms of the MIT License:
 # https://opensource.org/licenses/MIT.
 
-
-from typing import Dict, List, Optional, Union, Any, Set, Tuple
+from typing import Any, Optional, Union
 from collections.abc import Sequence
 
 import numpy as np
@@ -15,6 +14,7 @@ from xcube.constants import LOG
 from xcube.core import timeseries
 from xcube.core.ancvar import find_ancillary_var_names
 from xcube.core.gridmapping import GridMapping
+from xcube.core.varexpr import split_var_assignment
 from xcube.server.api import ApiError
 from xcube.util.geojson import GeoJSON
 from xcube.util.perf import measure_time
@@ -93,7 +93,11 @@ def get_time_series(
     )
 
     ml_dataset = ctx.datasets_ctx.get_ml_dataset(ds_name)
-    dataset = ctx.datasets_ctx.get_time_series_dataset(ds_name, var_name=var_name)
+    dataset = ctx.datasets_ctx.get_time_series_dataset(
+        ds_name,
+        # Check if var_name is an expression
+        var_name=var_name if "=" not in var_name else None,
+    )
     geo_json_geometries, is_collection = _to_geo_json_geometries(geo_json)
     geometries = _to_shapely_geometries(geo_json_geometries)
 
@@ -186,14 +190,19 @@ def _get_time_series_for_geometry(
     if time_series_ds is None:
         return []
 
-    var_names = {agg_method: f"{var_name}_{agg_method}" for agg_method in agg_methods}
+    var_name, _ = split_var_assignment(var_name)
+    key_to_var_names = {
+        agg_method: f"{var_name}_{agg_method}" for agg_method in agg_methods
+    }
 
-    return collect_timeseries_result(time_series_ds, var_names, max_valids=max_valids)
+    return collect_timeseries_result(
+        time_series_ds, key_to_var_names, max_valids=max_valids
+    )
 
 
 def _get_time_series_for_point(
     dataset: xr.Dataset,
-    var_name: str,
+    var_name_or_assign: str,
     point: shapely.geometry.Point,
     agg_methods: set[str],
     grid_mapping: Optional[GridMapping] = None,
@@ -214,16 +223,22 @@ def _get_time_series_for_point(
             "Aggregation methods must include one of" ' "mean", "median", "min", "max"'
         )
 
-    roles_to_anc_var_names = dict()
-    if incl_ancillary_vars:
+    var_names = [var_name_or_assign]
+    var_name, var_expr = split_var_assignment(var_name_or_assign)
+    key_to_var_names = {var_key: var_name}
+
+    if incl_ancillary_vars and not var_expr:
         roles_to_anc_var_name_sets = find_ancillary_var_names(
             dataset, var_name, same_shape=True, same_dims=True
         )
+        roles_to_anc_var_names = dict()
         for role, roles_to_anc_var_name_sets in roles_to_anc_var_name_sets.items():
             if role:
                 roles_to_anc_var_names[role] = roles_to_anc_var_name_sets.pop()
 
-    var_names = [var_name] + list(set(roles_to_anc_var_names.values()))
+        var_names += list(set(roles_to_anc_var_names.values()))
+        for role, anc_var_name in roles_to_anc_var_names.items():
+            key_to_var_names[role] = anc_var_name
 
     time_series_ds = timeseries.get_time_series(
         dataset,
@@ -236,10 +251,6 @@ def _get_time_series_for_point(
     )
     if time_series_ds is None:
         return []
-
-    key_to_var_names = {var_key: var_name}
-    for role, anc_var_name in roles_to_anc_var_names.items():
-        key_to_var_names[role] = anc_var_name
 
     return collect_timeseries_result(
         time_series_ds, key_to_var_names, max_valids=max_valids

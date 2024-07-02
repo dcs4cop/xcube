@@ -3,7 +3,6 @@
 # https://opensource.org/licenses/MIT.
 
 import unittest
-from typing import Set
 
 import numpy as np
 import pyproj
@@ -101,6 +100,15 @@ class GetTimeSeriesTest(unittest.TestCase):
             agg_methods=["mean", "std"],
         )
         self.assert_dataset_ok(ts_ds, 100, {"B_mean", "B_std"})
+
+    def test_polygon_agg_mean_std_var_subs_assign_expr(self):
+        ts_ds = get_time_series(
+            self.cube,
+            geometry=POLYGON_GEOMETRY,
+            var_names=["C=max(A,B)"],
+            agg_methods=["mean", "std"],
+        )
+        self.assert_dataset_ok(ts_ds, 100, {"C_mean", "C_std"})
 
     def test_no_vars(self):
         ts_ds = get_time_series(self.cube, geometry=POLYGON_GEOMETRY, var_names=[])

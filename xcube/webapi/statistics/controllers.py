@@ -2,11 +2,14 @@ from collections.abc import Mapping
 from typing import Any
 
 import numpy as np
+import xarray as xr
 import shapely
 
 from xcube.constants import LOG
 from xcube.core.geom import get_dataset_geometry
 from xcube.core.geom import mask_dataset_by_geometry
+from xcube.core.varexpr import VarExprContext
+from xcube.core.varexpr import split_var_assignment
 from xcube.server.api import ApiError
 from xcube.util.perf import measure_time_cm
 from .context import StatisticsContext
@@ -39,7 +42,7 @@ def compute_statistics(
 def _compute_statistics(
     ctx: StatisticsContext,
     ds_id: str,
-    var_name: str,
+    var_name_or_assign: str,
     time_label: str,
     geo_json: dict[str, Any],
     bin_count: int,
@@ -66,8 +69,8 @@ def _compute_statistics(
         if not bounds.contains(geometry):
             return NAN_RESULT
         indexers = {x_name: geometry.x, y_name: geometry.y}
-        dataset = dataset.sel(**indexers, method="Nearest")
-        value = dataset[var_name].values
+        variable = _get_dataset_variable(var_name_or_assign, dataset)
+        value = variable.sel(**indexers, method="Nearest").values
         if np.isnan(value):
             return NAN_RESULT
         return {
@@ -82,26 +85,39 @@ def _compute_statistics(
     if dataset is None:
         return NAN_RESULT
 
-    var = dataset[var_name]
-    count = int(np.count_nonzero(~np.isnan(var)))
+    variable = _get_dataset_variable(var_name_or_assign, dataset)
+
+    count = int(np.count_nonzero(~np.isnan(variable)))
     if count == 0:
         return NAN_RESULT
 
     # note, casting to float forces intended computation
-    minimum = float(var.min())
-    maximum = float(var.max())
+    minimum = float(variable.min())
+    maximum = float(variable.max())
     h_values, h_edges = np.histogram(
-        var, bin_count, range=(minimum, maximum), density=True
+        variable, bin_count, range=(minimum, maximum), density=True
     )
 
     return {
         "count": count,
         "minimum": minimum,
         "maximum": maximum,
-        "mean": float(var.mean()),
-        "deviation": float(var.std()),
+        "mean": float(variable.mean()),
+        "deviation": float(variable.std()),
         "histogram": {
             "values": [float(v) for v in h_values],
             "edges": [float(v) for v in h_edges],
         },
     }
+
+
+def _get_dataset_variable(var_name_or_assign: str, dataset: xr.Dataset) -> xr.DataArray:
+    var_name, var_expr = split_var_assignment(var_name_or_assign)
+    if var_expr:
+        variable = VarExprContext(dataset).evaluate(var_expr)
+        variable.name = var_name
+    else:
+        var_name = var_name_or_assign
+        variable = dataset[var_name]
+
+    return variable

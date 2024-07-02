@@ -13,6 +13,8 @@ import pyproj
 
 from xcube.core.gridmapping import CRS_CRS84
 from xcube.core.select import select_subset
+from xcube.core.varexpr import VarExprContext
+from xcube.core.varexpr import split_var_assignment
 from xcube.server.api import ApiError
 from xcube.server.api import ApiHandler
 from .api import api
@@ -104,16 +106,22 @@ class VolumesContextHandler(ApiHandler[VolumesContext]):
             (x1, x2), (y1, y2) = transformer.transform((x1, x2), (y1, y2))
             bbox = x1, y1, x2, y2
 
-        dataset = self.ctx.datasets_ctx.get_dataset(
-            datasetId, expected_var_names=[varName]
-        )
+        var_name, var_expr = split_var_assignment(varName)
+        if var_expr:
+            dataset = self.ctx.datasets_ctx.get_dataset(datasetId).copy()
+            dataset[var_name] = VarExprContext(dataset).evaluate(var_expr)
+        else:
+            dataset = self.ctx.datasets_ctx.get_dataset(
+                datasetId, expected_var_names=[var_name]
+            )
+
         var = select_subset(
             dataset,
-            var_names=[varName],
+            var_names=[var_name],
             time_range=time_range,
             bbox=bbox,
             grid_mapping=ml_dataset.grid_mapping,
-        )[varName]
+        )[var_name]
 
         if var.ndim != 3:
             raise ApiError.BadRequest(f"Variable must be 3-D, got {var.ndim}-D")
