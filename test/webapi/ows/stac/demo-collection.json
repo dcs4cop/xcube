@@ -7,6 +7,19 @@
       ],
       "type": "application/zarr",
       "href": "http://localhost:8080/s3/datasets/demo.zarr",
+      "xcube:store_kwargs": {
+        "data_store_id": "s3",
+        "root": "datasets",
+        "storage_options": {
+          "anon": true,
+          "client_kwargs": {
+            "endpoint_url": "http://localhost:8080/s3"
+          }
+        }
+      },
+      "xcube:open_kwargs": {
+        "data_id": "demo.zarr"
+      },
       "xcube:analytic": {
         "c2rcc_flags": {
           "title": "c2rcc_flags data access",

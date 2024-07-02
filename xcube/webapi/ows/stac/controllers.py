@@ -4,7 +4,7 @@
 
 
 import datetime
-from typing import Any, Optional, Dict, List, Union
+from typing import Any, Optional, Union
 from collections.abc import Hashable, Mapping
 import itertools
 
@@ -18,7 +18,7 @@ from xcube.core.gridmapping import CRS_CRS84, GridMapping
 from xcube.server.api import ApiError
 from xcube.server.api import ServerConfig
 from xcube.util.jsonencoder import to_json_value
-from xcube.util.jsonschema import JsonObjectSchema, JsonSchema
+from xcube.util.jsonschema import JsonObjectSchema
 from .config import DEFAULT_CATALOG_DESCRIPTION, DEFAULT_FEATURE_ID
 from .config import DEFAULT_CATALOG_ID
 from .config import DEFAULT_CATALOG_TITLE
@@ -798,6 +798,17 @@ def _get_assets(ctx: DatasetsContext, base_url: str, dataset_id: str):
             "roles": ["data"],
             "type": "application/zarr",
             "href": f"{default_storage_url}/{dataset_id}.zarr",
+            "xcube:store_kwargs": {
+                "data_store_id": "s3",
+                "root": "datasets",
+                "storage_options": {
+                    "anon": True,
+                    "client_kwargs": {"endpoint_url": "http://localhost:8080/s3"},
+                },
+            },
+            "xcube:open_kwargs": {
+                "data_id": f"{dataset_id}.zarr",
+            },
             "xcube:analytic": {
                 v["name"]: {
                     "title": f"{v['name']} data access",
